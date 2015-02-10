@@ -36,7 +36,6 @@ class Display
         gl_context = SDL_GL_CreateContext(window);
 
         is_display_closed = false;
-        is_disp_setup = true;
 
         // Load versions 1.2+ and all supported ARB and EXT extensions.
         DerelictGL3.reload();
@@ -62,16 +61,11 @@ class Display
     }
     void clear(float r, float g, float b, float a)
     {
-        glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
-    }
-    bool is_setup()
-    {
-        return is_disp_setup;
     }
 private:
     SDL_Window* window;
     SDL_GLContext gl_context;
     bool is_display_closed;
-    bool is_disp_setup;
 }
