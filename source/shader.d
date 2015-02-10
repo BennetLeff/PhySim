@@ -17,7 +17,7 @@ class Shader
         program = glCreateProgram();
 
         shaders[0] = create_shader(load_shader(file_name ~ ".vs"), GL_VERTEX_SHADER);
-        //shaders[1] = create_shader(load_shader(file_name ~ ".fs"), GL_FRAGMENT_SHADER);
+        shaders[1] = create_shader(load_shader(file_name ~ ".fs"), GL_FRAGMENT_SHADER);
 
         for (int i = 0; i < NUM_SHADERS; i++)
             glAttachShader(program, shaders[i]);
@@ -26,17 +26,11 @@ class Shader
 
         glLinkProgram(program);
 
-        check_shader_error(program, GL_COMPILE_STATUS, false, "Error linking shader!");
+        check_shader_error(program, GL_LINK_STATUS, true, "Error linking shader!");
 
         glValidateProgram(program);
 
-        check_shader_error(program, GL_COMPILE_STATUS, false, "Error invalid shader!");
-
-
-        if (glGenVertexArrays == null)
-        {
-            writeln("gl gen vertex arrays is missing in shader"); // chances are you don't have this feature...
-        }
+        check_shader_error(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
     }
     void bind()
     {
@@ -48,8 +42,12 @@ class Shader
         scope(exit) f.close();              //   and close the file when we're done.
                                             //   (optional)
         foreach (str; f.byLine)             // read every line in the file,
+        {
             output ~= str;
-	    writeln(output);
+            output ~= "\n";
+        }
+
+	    ///writeln(output);
         return output;                      //   and return it
     }
     GLuint create_shader(string text, GLenum shader_type)
@@ -89,7 +87,7 @@ class Shader
         }
     }
 private:
-    static const int NUM_SHADERS = 1;
+    static const int NUM_SHADERS = 2;
     GLuint program;
     GLuint shaders[NUM_SHADERS];
 }

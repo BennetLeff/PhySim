@@ -15,29 +15,18 @@ class Mesh
         DerelictGL3.reload();
 
         draw_count = num_vertices;
-        
-        
+          
         glGenVertexArrays(1, &vertex_array_object);
         glBindVertexArray(vertex_array_object);
-        
-
-        if (glGenVertexArrays == null)
-        {
-            writeln("gl gen vertex arrays is missing in mesh"); // chances are you don't have this feature...
-        }
 
         glGenBuffers(NUM_BUFFERS, vertex_array_buffers.ptr);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[POSITION_VB]);
         glBufferData(GL_ARRAY_BUFFER, num_vertices * vertices[0].sizeof, vertices, GL_STATIC_DRAW);
         
-        
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(cast(GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
 
         glBindVertexArray(0);
-        
-        glDeleteVertexArrays( 1, &vertex_array_object);
-
     }
     void draw()
     {
@@ -46,8 +35,6 @@ class Mesh
         glDrawArrays(GL_TRIANGLES, 0, draw_count);
 
         glBindVertexArray(0);
-
-        glDisableVertexAttribArray( 0 );
     }
 private:
     enum 
