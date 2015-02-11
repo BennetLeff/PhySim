@@ -31,6 +31,9 @@ class Shader
         glValidateProgram(program);
 
         check_shader_error(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
+    
+        if (!glGetError())
+            writeln(glGetError());
     }
     void bind()
     {

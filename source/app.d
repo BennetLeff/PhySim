@@ -5,7 +5,6 @@ import mesh;
 import vertex;
 import gl3n.gl3n.linalg;
 
-
 void main()
 {
 
@@ -19,16 +18,19 @@ void main()
 
     Shader shader = new Shader("./res/basic_shader");
 
-    Mesh mesh = new Mesh(vertices, vertices.sizeof/vertices[0].sizeof);
-    
+    Mesh mesh = new Mesh(vertices, 3);//vertices.sizeof/vertices[0].sizeof);
+
+    TutFile tut = new TutFile();
+
     while(!disp.is_closed())
     {
-        disp.clear(0.0f, 0.15f, 0.3f, 1.0f);
+        disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
         
         shader.bind();
         mesh.draw();
-
+        
         disp.update();
     }
+    tut.main(800, 600, "SDL Based Rendering Context");
     
 }
