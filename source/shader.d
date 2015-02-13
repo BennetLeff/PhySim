@@ -9,11 +9,6 @@ class Shader
 {
     this(string file_name)
     {
-        // Load OpenGL versions 1.0 and 1.1.
-        DerelictGL3.load();
-        // Load versions 1.2+ and all supported ARB and EXT extensions.
-        DerelictGL3.reload();
-
         program = glCreateProgram();
 
         shaders[0] = create_shader(load_shader(file_name ~ ".vs"), GL_VERTEX_SHADER);
