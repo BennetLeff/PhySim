@@ -2,17 +2,10 @@ import std.stdio;
 import display;
 import shader;
 import mesh;
-import vertex;
 import gl3n.gl3n.linalg;
 
 void main()
 {
-
-    //Vertex v1 = new Vertex(vec3(-0.5, -0.5, 0));
-    //Vertex v2 = new Vertex(vec3(0, 0.5, 0));
-    //Vertex v3 = new Vertex(vec3(0.5, -0.5, 0));
-    
-    //Vertex* vertices = [v1, v2, v3].ptr; 
 
     auto vertices = [ vec3(-0.5, -0.5, 0), vec3(0, 0.5, 0), vec3(0.5, -0.5, 0)];
 
