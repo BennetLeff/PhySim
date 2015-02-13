@@ -4,7 +4,6 @@ import std.stdio;
 import std.string;
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
-import vertex;
 
 class Display
 {
