@@ -4,6 +4,8 @@ import std.stdio;
 import std.string;
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
+import gl3n.gl3n.linalg;
+import transform;
 
 class Shader
 {
@@ -27,8 +29,16 @@ class Shader
 
         check_shader_error(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
     
+        uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
+
         if (!glGetError())
             writeln(glGetError());
+    }
+    void update(Transform transform)
+    {
+        mat4 model = transform.get_model();
+
+        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
     }
     void bind()
     {
@@ -88,4 +98,11 @@ private:
     static const int NUM_SHADERS = 2;
     GLuint program;
     GLuint shaders[NUM_SHADERS];
+    GLuint uniforms[NUM_UNIFORMS];
+    enum 
+    {
+        TRANSFORM_U,
+
+        NUM_UNIFORMS
+    };
 }
