@@ -6,6 +6,7 @@ import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
 import gl3n.gl3n.linalg;
 import transform;
+import camera;
 
 class Shader
 {
@@ -34,10 +35,9 @@ class Shader
         if (!glGetError())
             writeln(glGetError());
     }
-    void update(Transform transform)
+    void update(Transform transform, Camera camera)
     {
-        mat4 model = transform.get_model();
-
+        mat4 model = camera.get_view_projection() * transform.get_model();
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
     }
     void bind()
