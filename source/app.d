@@ -5,6 +5,7 @@ import mesh;
 import gl3n.gl3n.linalg;
 import transform;
 import camera;
+import meshloader;
 
 void main()
 {
@@ -17,15 +18,19 @@ void main()
 
     Shader shader = new Shader("./res/basic_shader");
 
-    Mesh mesh = new Mesh(vertices, 3);
+    uint indices[] = [0, 1, 2];
+
+    Mesh mesh = new Mesh(vertices, indices);
 
     Transform transform = new Transform();
 
     Transform tr2 = new Transform(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 
-    Camera camera = new Camera(vec3(0, 0, -1), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
+    Camera camera = new Camera(vec3(0, 0, -3), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
     float counter = 0.0f;
+
+    Mesh cube = new ObjLoader("./res/cube.obj").load_mesh_file();
 
     while(!disp.is_closed())
     {
@@ -35,9 +40,9 @@ void main()
         transform.set_rot(vec3(0, 0, sin(counter / 10)));
 
         shader.bind();
-        shader.update(tr2, camera);
-        mesh.draw();
-        
+        shader.update(transform, camera);
+        //mesh.draw();
+        cube.draw();
         disp.update();
         counter += 0.1f;
     }    

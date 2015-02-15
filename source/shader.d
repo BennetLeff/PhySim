@@ -32,8 +32,12 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 
-        if (!glGetError())
-            writeln(glGetError());
+        if (glGetError())
+        {
+            write("Error in shader class: ");
+            write(glGetError());
+            write("\n");
+        }
     }
     void update(Transform transform, Camera camera)
     {
@@ -102,7 +106,6 @@ private:
     enum 
     {
         TRANSFORM_U,
-
         NUM_UNIFORMS
     };
 }
