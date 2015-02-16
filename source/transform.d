@@ -19,22 +19,12 @@ class Transform
 	mat4 get_model () 
 	{
 		mat4 m4fv = mat4.translation(pos.x, pos.y, pos.z)
-						.rotatex(1)
-						.rotatey(1)
-						.rotatez(1)
+						.rotatex(rot.x)
+						.rotatey(rot.y)
+						.rotatez(rot.z)
 						.scale(scale.x, scale.y, scale.z);
 
 		return m4fv;
-
-		//mat4 pos_matrix = mat4.translate(pos.x, pos.y, pos.z);
-		//mat4 rot_x_matrix = mat4.rotatex(1);
-		//mat4 rot_y_matrix = mat4.rotatey(1);
-		//mat4 rot_z_matrix = mat4.rotatez(1);
-		//mat4 scale_matrix = mat4.scale(scale.x. scale.y, scale.z);
-
-		//mat4 rot_matrix = rot_z_matrix * rot_y_matrix * rot_x_matrix;
-
-		//return pos_matrix * rot_matrix * scale_matrix;
 	}
 	vec3 get_pos () { return pos; }
 	vec3 get_rot () { return rot; }
