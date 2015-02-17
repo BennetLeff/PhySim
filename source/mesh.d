@@ -8,7 +8,7 @@ class Mesh
 {
     this(vec3[] vertices, uint[] indices)
     {    
-        draw_count = indices.length;
+        draw_count = cast(int)indices.length;
 
         glGenVertexArrays(1, &vertex_array_object);
         glBindVertexArray(vertex_array_object);
