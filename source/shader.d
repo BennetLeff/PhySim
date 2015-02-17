@@ -4,6 +4,9 @@ import std.stdio;
 import std.string;
 import derelict.sdl2.sdl;
 import derelict.opengl3.gl3;
+import gl3n.gl3n.linalg;
+import transform;
+import camera;
 
 class Shader
 {
@@ -27,8 +30,19 @@ class Shader
 
         check_shader_error(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
     
-        if (!glGetError())
-            writeln(glGetError());
+        uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
+
+        if (glGetError())
+        {
+            write("Error in shader class: ");
+            write(glGetError());
+            write("\n");
+        }
+    }
+    void update(Transform transform, Camera camera)
+    {
+        mat4 model = camera.get_view_projection() * transform.get_model();
+        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
     }
     void bind()
     {
@@ -88,4 +102,10 @@ private:
     static const int NUM_SHADERS = 2;
     GLuint program;
     GLuint shaders[NUM_SHADERS];
+    GLuint uniforms[NUM_UNIFORMS];
+    enum 
+    {
+        TRANSFORM_U,
+        NUM_UNIFORMS
+    };
 }
