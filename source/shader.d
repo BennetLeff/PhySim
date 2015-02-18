@@ -32,6 +32,8 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 
+        uniforms[COLOR_U] = glGetUniformLocation(program, "color");
+
         if (glGetError())
         {
             write("Error in shader class: ");
@@ -39,10 +41,17 @@ class Shader
             write("\n");
         }
     }
+    void update(Transform transform, Camera camera, float[] color)
+    {
+        mat4 model = camera.get_view_projection() * transform.get_model();
+        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
+        glUniform1fv(uniforms[COLOR_U], 3, color.ptr);
+    }
     void update(Transform transform, Camera camera)
     {
         mat4 model = camera.get_view_projection() * transform.get_model();
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
+        glUniform1fv(uniforms[COLOR_U], 3, [1.0f, 0.0f, 0.0f].ptr);
     }
     void bind()
     {
@@ -106,6 +115,7 @@ private:
     enum 
     {
         TRANSFORM_U,
+        COLOR_U,
         NUM_UNIFORMS
     };
 }
