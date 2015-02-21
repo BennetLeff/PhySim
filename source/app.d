@@ -6,6 +6,7 @@ import gl3n.gl3n.linalg;
 import transform;
 import camera;
 import meshloader;
+import color;
 
 void main()
 {
@@ -32,13 +33,18 @@ void main()
 
     Mesh cube = new ObjLoader("./res/cube.obj").load_mesh_file();
 
+    float val[] = [10];
+
+    Color col = new Color(24, 116, 205);
+
     while(!disp.is_closed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
         
         //transform.set_pos(vec3(sin(counter / 10), 0, 0));
-        transform.set_rot(vec3(0, counter, counter));
         //transform.set_scale(vec3(sin(counter), 1, sin(counter)));
+        transform.set_pos(vec3(sin(counter / 10), 0, 0));
+        transform.set_rot(vec3(sin(counter / 10),  sin(counter / 10), sin(counter / 10)));
 
         shader.bind();
         shader.update(tr2, camera);
