@@ -31,15 +31,17 @@ class Mesh
 
         glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, cast(const(void)*)0);
 
+        //glDrawElementsBaseVertex(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, cast(const(void)*) 0, cast(const(void)*) 0);
+
         glBindVertexArray(0);
     }
 private:
     enum 
     {
         POSITION_VB,
-        INDEX_VB,
         NORMAL_VB,
-        NUM_BUFFERS
+        INDEX_VB,
+        NUM_BUFFERS = 4
     };
     GLuint vertex_array_object;
     GLuint vertex_array_buffers[NUM_BUFFERS];

@@ -12,7 +12,7 @@ void main()
     const int WIDTH = 800;
     const int HEIGHT = 600;
 
-    auto vertices = [ vec3(-0.5, -0.5, 0), vec3(0, 0.5, 0), vec3(0.5, -0.5, 0)];
+    auto vertices = [vec3(-0.5f, -0.5f, 0.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.5f, -0.5f, 0.0f)];
 
     Display disp = new Display(WIDTH, HEIGHT, "SDL Based Rendering Context");
 
@@ -26,7 +26,7 @@ void main()
 
     Transform tr2 = new Transform(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 
-    Camera camera = new Camera(vec3(0, 0, -3), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
+    Camera camera = new Camera(vec3(0, 0, -2), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
     float counter = 0.0f;
 
@@ -36,14 +36,15 @@ void main()
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
         
-        transform.set_pos(vec3(sin(counter / 10), 0, 0));
-        transform.set_rot(vec3(0, 0, sin(counter / 10)));
+        //transform.set_pos(vec3(sin(counter / 10), 0, 0));
+        transform.set_rot(vec3(0, counter, counter));
+        //transform.set_scale(vec3(sin(counter), 1, sin(counter)));
 
         shader.bind();
-        shader.update(transform, camera);
-        //mesh.draw();
-        cube.draw();
+        shader.update(tr2, camera);
+        mesh.draw();
+        //cube.draw();
         disp.update();
-        counter += 0.1f;
+        counter += 0.05f;
     }    
 }

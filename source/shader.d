@@ -32,6 +32,8 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
 
+        //glCullFace(GL_FRONT);
+
         if (glGetError())
         {
             write("Error in shader class: ");
