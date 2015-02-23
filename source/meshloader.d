@@ -8,6 +8,7 @@ import std.conv;
 import std.range;
 import gl3n.gl3n.linalg;
 import mesh;
+import vertex;
 
 class ObjLoader
 {
@@ -16,8 +17,8 @@ class ObjLoader
 		// currently checking if the file is an .obj
 		if (!check_valid_file(file_name))
             this.file_name = file_name;
-        else 
-            stderr.writeln(format("File format %s not supported", match(file_name, r".{1,3}$")));	
+        else
+            stderr.writeln(format("File format %s not supported", match(file_name, r".{1,3}$")));
     }
     bool check_valid_file(string file_name)
 	{
@@ -35,9 +36,9 @@ class ObjLoader
             {
             	if (tokens[0] == "v")
             	{
-            		vertices.insertBack(vec3(to!float(tokens[1]), 
-            								 to!float(tokens[2]), 
-            								 to!float(tokens[3])));
+            		vertices.insertBack(new Vertex(vec3(to!float(tokens[1]),
+            								 	to!float(tokens[2]),
+            								 	to!float(tokens[3]))));
             	}
             	else if (tokens[0] == "f")
             	{
@@ -47,11 +48,11 @@ class ObjLoader
             	}
             }
         }
-        auto vertices = make_vec3_array(vertices);
+        auto vertices = make_vert_array(vertices);
         auto indices = make_uint_array(indices);
         return new Mesh(vertices, indices);                      //   and return it
     }
-    vec3[] make_vec3_array(DList!vec3 container_to_convert)
+    Vertex[] make_vert_array(DList!Vertex container_to_convert)
     {
         return container_to_convert[].array;
     }
@@ -60,7 +61,7 @@ class ObjLoader
         return container_to_convert[].array;
     }
 private:
-	auto vertices = make!(DList!vec3)();
+	auto vertices = make!(DList!Vertex)();
 	auto indices = make!(DList!uint)();
     string file_name;
 }

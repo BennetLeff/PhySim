@@ -20,19 +20,16 @@ class Shader
         for (int i = 0; i < NUM_SHADERS; i++)
             glAttachShader(program, shaders[i]);
 
-        glBindAttribLocation(program, 0, "position"); 
+        glBindAttribLocation(program, 0, "position");
+        glBindAttribLocation(program, 1, "tex_coord");
 
         glLinkProgram(program);
-
         check_shader_error(program, GL_LINK_STATUS, true, "Error linking shader!");
 
         glValidateProgram(program);
-
         check_shader_error(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
-
-        //glCullFace(GL_FRONT);
         uniforms[COLOR_U] = glGetUniformLocation(program, "color");
 
         if (glGetError())
