@@ -18,10 +18,6 @@ class Texture
     if (surface == null)
       writeln("Error: Texture loading failed");
 
-    
-
-    //ubyte* image_data = stbi_load_from_memory(cast(void[])file_name, width, height, num_components, 4);
-
     // gen space for one texture at GLuint texture
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);

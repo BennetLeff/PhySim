@@ -23,7 +23,7 @@ void main()
 
     uint indices[] = [0, 1, 2];
 
-    //Mesh mesh = new Mesh(vertices, indices);
+    Mesh mesh = new Mesh(vertices, indices);
 
     Transform transform = new Transform();
 
@@ -33,9 +33,9 @@ void main()
 
     float counter = 0.0f;
 
-    Texture tex = new Texture("/home/bennet/Desktop/PhySim/res/bricks.jpg");
+    Texture tex = new Texture("./res/bricks.jpg");
 
-    Mesh cube = new ObjLoader("./res/cube.obj").load_mesh_file();
+    Mesh cube = new ObjLoader("./res/teapot.obj").load_mesh_file();
 
     Color col = new Color(24, 116, 205);
 
