@@ -10,6 +10,8 @@ import gl3n.gl3n.linalg;
 import mesh;
 import vertex;
 
+// helpful code http://www.cplusplus.com/forum/general/105894/
+
 class ObjLoader
 {
 	this(string file_name)
@@ -42,21 +44,26 @@ class ObjLoader
             	}
             	else if (tokens[0] == "f")
             	{
-                    if (match(tokens[1], r"\d/"))
+                    if (!match(tokens[1], r"/\d/") && match(tokens[1], r"./"))
                     {    
-                        indices.insertBack((to!uint(tokens[1].split("/")[1])) - 1);
-                		indices.insertBack((to!uint(tokens[2].split("/")[1])) - 1);
-                        indices.insertBack((to!uint(tokens[3].split("/")[1])) - 1);
+                        writeln("matched d1 ", tokens[1]); 
+                        indices.insertBack((to!uint(tokens[1].split("/")[0])) - 1);
+                		indices.insertBack((to!uint(tokens[2].split("/")[0])) - 1);
+                        indices.insertBack((to!uint(tokens[3].split("/")[0])) - 1);
+                        uv_index.insertBack(1);
+                        uv_index.insertBack(1);
+                        uv_index.insertBack(1);
                     }
-                    else if (match(tokens[1], r"\d/\d"))
-                    {    
-                        indices.insertBack((to!uint(tokens[1].split("/")[1])) - 1);
-                        indices.insertBack((to!uint(tokens[2].split("/")[1])) - 1);
-                        indices.insertBack((to!uint(tokens[3].split("/")[1])) - 1);
-                        // set third num after slash to texture vert
-                        //tex_coords.insertBack((to!float(tokens[1].split("/")[3])) - 1);
-                        //tex_coords.insertBack((to!float(tokens[2].split("/")[3])) - 1);
-                        //tex_coords.insertBack((to!float(tokens[3].split("/")[3])) - 1);
+                    else if (match(tokens[1], r"/\d/"))
+                    {   
+                        writeln("matched d2 ", tokens); 
+                        indices.insertBack((to!uint(tokens[1].split("/")[0])) - 1);
+                        indices.insertBack((to!uint(tokens[2].split("/")[0])) - 1);
+                        indices.insertBack((to!uint(tokens[3].split("/")[0])) - 1);
+                        // set second num after slash to texture vert
+                        uv_index.insertBack(to!int(tokens[1].split("/")[1]));
+                        uv_index.insertBack(to!int(tokens[2].split("/")[1]));
+                        uv_index.insertBack(to!int(tokens[3].split("/")[1]));
                     }
                     else 
                     {
@@ -73,7 +80,7 @@ class ObjLoader
                 }
                 else if (tokens[0] == "vt")
                 {
-                    tex_coords.insertBack(vec2(to!float(tokens[1]), to!float(tokens[2])));
+                    temp_uvs.insertBack(vec2(to!float(tokens[1]), to!float(tokens[2])));
                 }
             }
         }
@@ -84,19 +91,18 @@ class ObjLoader
     }
     Vertex[] make_vert_array(DList!Vertex container_to_convert)
     {
-        if (tex_coords[].array.length)
+        if (container_to_convert[].array.length && temp_uvs[].array.length)
         {
-            int i = 0;
-            auto coords = tex_coords[].array;
-            foreach (vert; vertices)
+            for (int i = 0; i < container_to_convert[].array.length; i++)
             {
-                if (i >= coords.length)
-                {
-                    writeln("Warning: ", "More vertices than texture coordinates in OBJ file.");
-                    break;
-                }
-                vert.tex_coords = coords[i];
-                i++;
+                container_to_convert[].array[i].tex_coords = temp_uvs[].array[ uv_index[].array[i] - 1 ];
+            }
+        }
+        else 
+        {
+            for (int i = 0; i < container_to_convert[].array.length; i++)
+            {
+                container_to_convert[].array[i].tex_coords = vec2(0.0, 0.0);
             }
         }
         return container_to_convert[].array;
@@ -109,6 +115,8 @@ private:
 	auto vertices = make!(DList!Vertex)();
 	auto indices = make!(DList!uint)();
     auto normals = make!(DList!float)();
+    auto uv_index = make!(DList!int)();
+    auto temp_uvs = make!(DList!vec2)();
     auto tex_coords = make!(DList!vec2)();
     string file_name;
 }

@@ -32,8 +32,6 @@ class Shader
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
         uniforms[COLOR_U] = glGetUniformLocation(program, "color");
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         if (glGetError())
         {
             write("Error in shader class: ");

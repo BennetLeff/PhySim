@@ -32,8 +32,6 @@ class Mesh
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(cast(GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
 
-        ///glBindVertexArray(0);
-
         glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[TEXCOORD_VB]);
         glBufferData(GL_ARRAY_BUFFER, vertices.length * vec2.sizeof, (tex_coord_list[].array).ptr, GL_STATIC_DRAW);
 

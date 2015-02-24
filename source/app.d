@@ -29,13 +29,13 @@ void main()
 
     Transform tr2 = new Transform(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 
-    Camera camera = new Camera(vec3(0, 0, -10), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
+    Camera camera = new Camera(vec3(0, 0, -5), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
     float counter = 0.0f;
 
     Texture tex = new Texture("./res/bricks.jpg");
 
-    Mesh cube = new ObjLoader("./res/teapot.obj").load_mesh_file();
+    Mesh cube = new ObjLoader("./res/monkey.obj").load_mesh_file();
 
     Color col = new Color(24, 116, 205);
 

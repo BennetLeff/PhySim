@@ -28,6 +28,8 @@ class Display
         SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+
 
         window = SDL_CreateWindow(title, 0, 0, width, height,
                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -38,6 +40,10 @@ class Display
 
         // Load versions 1.2+ and all supported ARB and EXT extensions.
         DerelictGL3.reload();
+
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+
     }
     void update()
     {
@@ -61,7 +67,7 @@ class Display
     void clear(float r, float g, float b, float a)
     {
         glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 private:
     SDL_Window* window;
