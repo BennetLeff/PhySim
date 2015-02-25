@@ -11,6 +11,15 @@ class Mesh
 {
     this(Vertex[] vertices, uint[] indices)
     {    
+        //writeln("vertices: ", vertices, " indices: ", indices);
+        writeln("tri");
+        for(int i = 0; i < vertices.length; i++)
+        {
+            writeln("vertices pos: ", vertices[i].pos);
+            writeln("vertices tex: ", vertices[i].tex_coords);
+            writeln("indices: ", indices[i]);
+        }
+
         draw_count = cast(int)indices.length;
 
         auto pos_list = DList!vec3();

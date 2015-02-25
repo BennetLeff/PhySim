@@ -35,7 +35,7 @@ void main()
 
     Texture tex = new Texture("./res/bricks.jpg");
 
-    Mesh cube = new ObjLoader("./res/monkey.obj").load_mesh_file();
+    Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
 
     Color col = new Color(24, 116, 205);
 
