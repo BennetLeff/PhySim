@@ -23,7 +23,7 @@ void main()
 
     uint indices[] = [0, 1, 2];
 
-    Mesh mesh = new Mesh(vertices, indices);
+    //Mesh mesh = new Mesh(vertices, indices);
 
     Transform transform = new Transform();
 

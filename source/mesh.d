@@ -3,6 +3,7 @@ module mesh;
 import std.stdio;
 import std.container;
 import std.range;
+import meshloader;
 import vertex;
 import derelict.opengl3.gl3;
 import gl3n.gl3n.linalg;
@@ -11,15 +12,6 @@ class Mesh
 {
     this(Vertex[] vertices, uint[] indices)
     {    
-        //writeln("vertices: ", vertices, " indices: ", indices);
-        writeln("tri");
-        for(int i = 0; i < vertices.length; i++)
-        {
-            writeln("vertices pos: ", vertices[i].pos);
-            writeln("vertices tex: ", vertices[i].tex_coords);
-            writeln("indices: ", indices[i]);
-        }
-
         draw_count = cast(int)indices.length;
 
         auto pos_list = DList!vec3();
@@ -29,6 +21,11 @@ class Mesh
         {
             pos_list.insert(vertices[i].pos);
             tex_coord_list.insert(vertices[i].tex_coords);
+        }
+
+        for (int i = 0; i < indices.length; i++)
+        {
+            indices[i] = i;
         }
 
         glGenVertexArrays(1, &vertex_array_object);

@@ -11,7 +11,12 @@ import mesh;
 import vertex;
 
 // helpful code http://www.cplusplus.com/forum/general/105894/
-
+struct IndexedModel
+{
+    vec3 pos;
+    vec3 normals;
+    vec2 tex_coords;
+}
 class ObjLoader
 {
 	this(string file_name)
@@ -46,7 +51,6 @@ class ObjLoader
             	{
                     if (!match(tokens[1], r"/\d/") && match(tokens[1], r"./"))
                     {    
-                        writeln("matched d1 ", tokens[1]); 
                         indices.insertBack((to!uint(tokens[1].split("/")[0])));
                 		indices.insertBack((to!uint(tokens[2].split("/")[0])));
                         indices.insertBack((to!uint(tokens[3].split("/")[0])));
@@ -56,15 +60,13 @@ class ObjLoader
                     }
                     else if (match(tokens[1], r"/\d/"))
                     {   
-                        writeln("matched d2 ", tokens); 
-                        indices.insertBack((to!uint(tokens[1].split("/")[0])));
-                        indices.insertBack((to!uint(tokens[2].split("/")[0])));
-                        indices.insertBack((to!uint(tokens[3].split("/")[0])));
+                        indices.insertBack((to!uint(tokens[1].split("/")[0]) - 1));
+                        indices.insertBack((to!uint(tokens[2].split("/")[0]) - 1));
+                        indices.insertBack((to!uint(tokens[3].split("/")[0]) - 1));
                         // set second num after slash to texture vert
                         uv_index.insertBack(to!int(tokens[1].split("/")[1]));
                         uv_index.insertBack(to!int(tokens[2].split("/")[1]));
                         uv_index.insertBack(to!int(tokens[3].split("/")[1]));
-                        //writeln("tokens[1].split(/): ", tokens[1].split("/")[1], tokens[2].split("/")[1], tokens[3].split("/")[1]);
                     }
                     else 
                     {
@@ -81,59 +83,30 @@ class ObjLoader
                 }
                 else if (tokens[0] == "vt")
                 {
-                    //writeln("tokens[1], [2] ", tokens[1], " ", tokens[2]);
-                    ///writeln("tokens[2] ", tokens[2]);
                     temp_uvs.insertBack(vec2(to!float(tokens[1]), to!float(tokens[2])));
                 }
             }
         }
         auto vertices = make_vert_array(vertices);
-
         auto indices = make_uint_array(indices);
-        return new Mesh(vertices, indices);                      //   and return it
-        //return new Mesh([new Vertex(vec3(0.0, 1.0, 0.5))], [1]);
+
+        return new Mesh(vertices, indices);
     }
     Vertex[] make_vert_array(DList!vec3 container_to_convert)
     {
         if (container_to_convert[].array.length && temp_uvs[].array.length)
         {
-            int j;
-            int i;
-            /*
-            for (j = 0; j < indices[].array.length; j++)
+            for (int i = 0; i < indices[].array.length; i++)
             {
-                //writeln("uvs: ", uv_index[].array[j]);
-            }
-            writeln(j);
-            for (i = 0; i < container_to_convert[].array.length; i++)
-            {
-                container_to_convert[].array[i].tex_coords = temp_uvs[].array[ uv_index[].array[i] - 1 ];
-                
-                //writeln("tex_coords: ", container_to_convert[].array[i].tex_coords);
-            }
-            writeln(i);
-            */
-            //writeln("vertex array: ", vertices[].array);
-            //writeln("indices array: ", indices[].array);
-            //writeln("uvs array: ", temp_uvs[].array);
-            writeln("uv index: ", uv_index[].array);
-            writeln("indices: ", indices[].array);
-            for (i = 0; i < indices[].array.length; i++)
-            {
-                //writeln("indices index: ", indices[].array[i]);
-                //writeln("vertices: ", vertices[].array[ indices[].array[i] ]);
-                //writeln("tex coords: ", temp_uvs[].array[ uv_index[].array[i] - 1 ]);
-
-                // making a list of Vertices with vert and tex coords at their indexs of uv's and indices
-                temp_verts.insertBack(new Vertex(vertices[].array[ indices[].array[i]  - 1 ], 
+                temp_verts.insertBack(new Vertex(vertices[].array[ indices[].array[i]], 
                                                  temp_uvs[].array[ uv_index[].array[i] - 1 ]));           
             }
         }
-        else 
+        else
         {
-            for (int i = 0; i < container_to_convert[].array.length; i++)
-            {
-                //container_to_convert[].array[i].tex_coords = vec2(0.0, 0.0);
+            for (int i = 0; i < indices[].array.length; i++)
+            {    
+                temp_verts.insertBack(new Vertex(vertices[].array[indices[].array[i] - 1]));
             }
         }
         return temp_verts[].array;
@@ -148,7 +121,6 @@ private:
     auto normals = make!(DList!float)();
     auto uv_index = make!(DList!int)();
     auto temp_uvs = make!(DList!vec2)();
-    auto tex_coords = make!(DList!vec2)();
     auto temp_verts = make!(DList!Vertex)();
     string file_name;
 }
