@@ -49,6 +49,47 @@ class Mesh
 
         glBindVertexArray(0);
     }
+    this(IndexedModel indexed_model, uint[] indices)
+    {    
+        draw_count = cast(int)indices.length;
+
+        /*
+        auto pos_list = DList!vec3();
+        auto tex_coord_list = DList!vec2();
+
+        for (uint i = 0; i < vertices.length; i++)
+        {
+            pos_list.insert(vertices[i].pos);
+            tex_coord_list.insert(vertices[i].tex_coords);
+        }
+        */
+
+        for (int i = 0; i < indices.length; i++)
+        {
+            indices[i] = i;
+        }
+
+        glGenVertexArrays(1, &vertex_array_object);
+        glBindVertexArray(vertex_array_object);
+
+        glGenBuffers(NUM_BUFFERS, vertex_array_buffers.ptr);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[POSITION_VB]);
+        glBufferData(GL_ARRAY_BUFFER, indexed_model.pos.length * vec3.sizeof, indexed_model.pos.ptr, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(cast(GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[TEXCOORD_VB]);
+        glBufferData(GL_ARRAY_BUFFER, indexed_model.tex_coords.length * vec2.sizeof, indexed_model.tex_coords.ptr, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(cast(GLuint)1, 2, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_array_buffers[INDEX_VB]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * indices.sizeof, indices.ptr, GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+    }
     void draw()
     {
         glBindVertexArray(vertex_array_object);

@@ -13,9 +13,9 @@ import vertex;
 // helpful code http://www.cplusplus.com/forum/general/105894/
 struct IndexedModel
 {
-    vec3 pos;
-    vec3 normals;
-    vec2 tex_coords;
+    vec3[] pos;
+    vec3[] normals;
+    vec2[] tex_coords;
 }
 class ObjLoader
 {
@@ -43,7 +43,7 @@ class ObjLoader
             {
             	if (tokens[0] == "v")
             	{
-            		vertices.insertBack(vec3(to!float(tokens[1]),
+            		vertices.insert(vec3(to!float(tokens[1]),
             								 	to!float(tokens[2]),
             								 	to!float(tokens[3])));
             	}
@@ -51,76 +51,94 @@ class ObjLoader
             	{
                     if (!match(tokens[1], r"/\d/") && match(tokens[1], r"./"))
                     {    
-                        indices.insertBack((to!uint(tokens[1].split("/")[0])));
-                		indices.insertBack((to!uint(tokens[2].split("/")[0])));
-                        indices.insertBack((to!uint(tokens[3].split("/")[0])));
-                        uv_index.insertBack(1);
-                        uv_index.insertBack(1);
-                        uv_index.insertBack(1);
+                        indices.insert((to!uint(tokens[1].split("/")[0])));
+                		indices.insert((to!uint(tokens[2].split("/")[0])));
+                        indices.insert((to!uint(tokens[3].split("/")[0])));
+                        uv_index.insert(1);
+                        uv_index.insert(1);
+                        uv_index.insert(1);
                     }
                     else if (match(tokens[1], r"/\d/"))
                     {   
-                        indices.insertBack((to!uint(tokens[1].split("/")[0]) - 1));
-                        indices.insertBack((to!uint(tokens[2].split("/")[0]) - 1));
-                        indices.insertBack((to!uint(tokens[3].split("/")[0]) - 1));
+                        indices.insert((to!uint(tokens[1].split("/")[0]) - 1));
+                        indices.insert((to!uint(tokens[2].split("/")[0]) - 1));
+                        indices.insert((to!uint(tokens[3].split("/")[0]) - 1));
                         // set second num after slash to texture vert
-                        uv_index.insertBack(to!int(tokens[1].split("/")[1]));
-                        uv_index.insertBack(to!int(tokens[2].split("/")[1]));
-                        uv_index.insertBack(to!int(tokens[3].split("/")[1]));
+                        uv_index.insert(to!int(tokens[1].split("/")[1]));
+                        uv_index.insert(to!int(tokens[2].split("/")[1]));
+                        uv_index.insert(to!int(tokens[3].split("/")[1]));
                     }
                     else 
                     {
-                        indices.insertBack((to!uint(tokens[1])));
-                        indices.insertBack((to!uint(tokens[2])));
-                        indices.insertBack((to!uint(tokens[3])));
+                        indices.insert((to!uint(tokens[1])));
+                        indices.insert((to!uint(tokens[2])));
+                        indices.insert((to!uint(tokens[3])));
                     }
                 }
                 else if (tokens[0] == "vn")
                 {
-                    normals.insertBack((to!float(tokens[1])) - 1);
-                    normals.insertBack((to!float(tokens[2])) - 1);
-                    normals.insertBack((to!float(tokens[3])) - 1);
+                    normals.insert((to!float(tokens[1])) - 1);
+                    normals.insert((to!float(tokens[2])) - 1);
+                    normals.insert((to!float(tokens[3])) - 1);
                 }
                 else if (tokens[0] == "vt")
                 {
-                    temp_uvs.insertBack(vec2(to!float(tokens[1]), to!float(tokens[2])));
+                    temp_uvs.insert(vec2(to!float(tokens[1]), to!float(tokens[2])));
                 }
             }
         }
-        auto vertices = make_vert_array(vertices);
+        //auto vertices = make_vert_array(vertices);
         auto indices = make_uint_array(indices);
 
-        return new Mesh(vertices, indices);
+        return new Mesh(make_indexed_model(), indices);
+        //return null;
     }
-    Vertex[] make_vert_array(DList!vec3 container_to_convert)
+    Vertex[] make_vert_array(Array!vec3 container_to_convert)
     {
-        if (container_to_convert[].array.length && temp_uvs[].array.length)
+        if (container_to_convert.length && temp_uvs[].array.length)
         {
-            for (int i = 0; i < indices[].array.length; i++)
+            for (int i = 0; i < indices.length; i++)
             {
-                temp_verts.insertBack(new Vertex(vertices[].array[ indices[].array[i]], 
-                                                 temp_uvs[].array[ uv_index[].array[i] - 1 ]));           
+                temp_verts.insert(new Vertex(vertices.array[ indices[].array[i]], 
+                                                 temp_uvs[].array[ uv_index[].array[i] - 1 ]));
             }
         }
         else
         {
-            for (int i = 0; i < indices[].array.length; i++)
+            for (int i = 0; i < indices.length; i++)
             {    
-                temp_verts.insertBack(new Vertex(vertices[].array[indices[].array[i] - 1]));
+                temp_verts.insert(new Vertex(vertices.array[indices.array[i] - 1]));
             }
         }
-        return temp_verts[].array;
+        return temp_verts.array;
     }
-    uint[] make_uint_array(DList!uint container_to_convert)
+    uint[] make_uint_array(Array!uint container_to_convert)
     {
-        return container_to_convert[].array;
+        return container_to_convert.array;
+    }
+    private IndexedModel make_indexed_model()
+    {
+        IndexedModel mod;
+        
+        for (int i = 0; i < indices.length; i++)
+        {
+            index_model_pos.insert(vertices.array[ indices[].array[i]]);
+            index_model_tex.insert(temp_uvs[].array[ uv_index[].array[i] - 1 ]);
+        }
+
+        mod.pos = index_model_pos.array;
+        mod.tex_coords = index_model_tex.array;
+
+        return mod;
     }
 private:
-	auto vertices = make!(DList!vec3)();
-	auto indices = make!(DList!uint)();
+	auto vertices = make!(Array!vec3)();
+	auto indices = make!(Array!uint)();
     auto normals = make!(DList!float)();
     auto uv_index = make!(DList!int)();
     auto temp_uvs = make!(DList!vec2)();
-    auto temp_verts = make!(DList!Vertex)();
+    auto index_model_pos = make!(Array!vec3)();
+    auto index_model_tex = make!(Array!vec2)();
+    auto temp_verts = make!(Array!Vertex)();
     string file_name;
 }

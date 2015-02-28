@@ -1,4 +1,6 @@
 import std.stdio;
+import std.datetime;
+import std.array;
 import display;
 import shader;
 import mesh;
@@ -35,7 +37,15 @@ void main()
 
     Texture tex = new Texture("./res/bricks.jpg");
 
-    Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
+    //Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
+
+    auto startTime = Clock.currStdTime;
+
+    ObjLoader obj = new ObjLoader("./res/teddy.obj");
+
+    obj.load_mesh_file();
+
+    writeln("Mesh loaded in ", (Clock.currStdTime - startTime) / 10000000.0, " seconds");
 
     Color col = new Color(24, 116, 205);
 
@@ -50,7 +60,7 @@ void main()
         shader.update(transform, camera, col.return_by_array());
         tex.bind(0);
         //mesh.draw();
-        cube.draw();
+        //cube.draw();
         disp.update();
         counter += 0.05f;
     }
