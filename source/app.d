@@ -25,8 +25,6 @@ void main()
 
     uint indices[] = [0, 1, 2];
 
-    //Mesh mesh = new Mesh(vertices, indices);
-
     Transform transform = new Transform();
 
     Transform tr2 = new Transform(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
@@ -35,15 +33,11 @@ void main()
 
     float counter = 0.0f;
 
-    Texture tex = new Texture("./res/bill.jpeg");
-
-    //Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
+    Texture tex = new Texture("./res/bricks.jpg");
 
     auto startTime = Clock.currStdTime;
 
-    ObjLoader obj = new ObjLoader("./res/teddy.obj");
-
-    obj.load_mesh_file();
+    Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
 
     writeln("Mesh loaded in ", (Clock.currStdTime - startTime) / 10000000.0, " seconds");
 
@@ -60,7 +54,7 @@ void main()
         shader.update(transform, camera, col.return_by_array());
         tex.bind(0);
         //mesh.draw();
-        //cube.draw();
+        cube.draw();
         disp.update();
         counter += 0.05f;
     }

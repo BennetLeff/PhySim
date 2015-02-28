@@ -16,6 +16,7 @@ struct IndexedModel
     vec3[] pos;
     vec3[] normals;
     vec2[] tex_coords;
+    uint[] indices;
 }
 class ObjLoader
 {
@@ -87,43 +88,25 @@ class ObjLoader
                 }
             }
         }
-        //auto vertices = make_vert_array(vertices);
-        auto indices = make_uint_array(indices);
 
-        return new Mesh(make_indexed_model(), indices);
-        //return null;
-    }
-    Vertex[] make_vert_array(Array!vec3 container_to_convert)
-    {
-        if (container_to_convert.length && temp_uvs[].array.length)
-        {
-            for (int i = 0; i < indices.length; i++)
-            {
-                temp_verts.insert(new Vertex(vertices.array[ indices[].array[i]], 
-                                                 temp_uvs[].array[ uv_index[].array[i] - 1 ]));
-            }
-        }
-        else
-        {
-            for (int i = 0; i < indices.length; i++)
-            {    
-                temp_verts.insert(new Vertex(vertices.array[indices.array[i] - 1]));
-            }
-        }
-        return temp_verts.array;
-    }
-    uint[] make_uint_array(Array!uint container_to_convert)
-    {
-        return container_to_convert.array;
-    }
-    private IndexedModel make_indexed_model()
+        return new Mesh(make_indexed_model(vertices, temp_uvs, indices, uv_index));
+    }    
+    private IndexedModel make_indexed_model(Array!vec3 vert_cont, Array!vec2 tex_cont, Array!uint vert_index_cont, Array!int uv_index_cont)
     {
         IndexedModel mod;
         
-        for (int i = 0; i < indices.length; i++)
+        mod.indices = vert_index_cont.array;
+        auto vertices_arr = vert_cont.array;
+        auto uv_index_arr = uv_index_cont.array;
+        auto tex_arr = tex_cont.array;
+        for (int i = 0; i < vert_index_cont.length; i++)
         {
-            index_model_pos.insert(vertices.array[ indices[].array[i]]);
-            index_model_tex.insert(temp_uvs[].array[ uv_index[].array[i] - 1 ]);
+            //uint x = vert_index_cont[i];
+            index_model_pos.insert(vertices_arr[ vert_index_cont[i] ]);
+            if (uv_index.length)
+                index_model_tex.insert(tex_arr[ uv_index_arr[i] - 1 ]);
+            if (i < indices.length)
+                mod.indices[i] = i;
         }
 
         mod.pos = index_model_pos.array;
@@ -134,11 +117,10 @@ class ObjLoader
 private:
 	auto vertices = make!(Array!vec3)();
 	auto indices = make!(Array!uint)();
-    auto normals = make!(DList!float)();
-    auto uv_index = make!(DList!int)();
-    auto temp_uvs = make!(DList!vec2)();
+    auto normals = make!(Array!float)();
+    auto uv_index = make!(Array!int)();
+    auto temp_uvs = make!(Array!vec2)();
     auto index_model_pos = make!(Array!vec3)();
     auto index_model_tex = make!(Array!vec2)();
-    auto temp_verts = make!(Array!Vertex)();
     string file_name;
 }
