@@ -22,6 +22,7 @@ class Shader
 
         glBindAttribLocation(program, 0, "position");
         glBindAttribLocation(program, 1, "tex_coord");
+        glBindAttribLocation(program, 2, "normal");
 
         glLinkProgram(program);
         check_shader_error(program, GL_LINK_STATUS, true, "Error linking shader!");

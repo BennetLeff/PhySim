@@ -44,6 +44,25 @@ class Mesh
 
         glBindVertexArray(0);
     }
+    this(vec3[] vertices, uint[] indices)
+    {    
+        draw_count = cast(int)indices.length;
+
+        glGenVertexArrays(1, &vertex_array_object);
+        glBindVertexArray(vertex_array_object);
+
+        glGenBuffers(NUM_BUFFERS, vertex_array_buffers.ptr);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[POSITION_VB]);
+        glBufferData(GL_ARRAY_BUFFER, vertices.length * vec3.sizeof, vertices.ptr, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(cast(GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_array_buffers[INDEX_VB]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * indices.sizeof, indices.ptr, GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+    }
     this(IndexedModel indexed_model)
     {    
         draw_count = cast(int)indexed_model.indices.length;
@@ -64,6 +83,13 @@ class Mesh
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(cast(GLuint)1, 2, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
 
+        glGenBuffers(NUM_BUFFERS, vertex_array_buffers.ptr);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_array_buffers[NORMAL_VB]);
+        glBufferData(GL_ARRAY_BUFFER, indexed_model.normals.length * vec3.sizeof, indexed_model.normals.ptr, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(cast(GLuint)2, 3, GL_FLOAT, GL_FALSE, 0, cast(void*)0);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_array_buffers[INDEX_VB]);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexed_model.indices.length * indexed_model.indices.sizeof, indexed_model.indices.ptr, GL_STATIC_DRAW);
 
@@ -74,8 +100,6 @@ class Mesh
         glBindVertexArray(vertex_array_object);
 
         glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, cast(const(void)*)0);
-
-        //glDrawElementsBaseVertex(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, cast(const(void)*) 0, cast(const(void)*) 0);
 
         glBindVertexArray(0);
     }

@@ -41,7 +41,6 @@ class Display
         // Load versions 1.2+ and all supported ARB and EXT extensions.
         DerelictGL3.reload();
 
-        glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
 
     }
