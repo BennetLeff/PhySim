@@ -29,11 +29,11 @@ void main()
 
     Transform tr2 = new Transform(vec3(0, 0, 0), vec3(0, 0, 0), vec3(1, 1, 1));
 
-    Camera camera = new Camera(vec3(0, 0, -5), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
+    Camera camera = new Camera(vec3(0, 0, -3), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
     float counter = 0.0f;
 
-    Texture tex = new Texture("./res/bricks.jpg");
+    Texture tex = new Texture("./res/bill.jpeg");
 
     Mesh cube = new ObjLoader("./res/cubetextured.obj").load_mesh_file();
 
