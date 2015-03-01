@@ -1,5 +1,6 @@
 module transform;
 
+import std.math;
 import gl3n.gl3n.linalg;
 
 class Transform
@@ -19,9 +20,9 @@ class Transform
 	mat4 get_model () 
 	{
 		mat4 m4fv = mat4.translation(pos.x, pos.y, pos.z)
-						.rotatex(rot.x)
-						.rotatey(rot.y)
-						.rotatez(rot.z)
+						.rotatex(rot.x * (PI/180))
+						.rotatey(rot.y * (PI/180))
+						.rotatez(rot.z * (PI/180))
 						.scale(scale.x, scale.y, scale.z);
 
 		return m4fv;

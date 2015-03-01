@@ -135,7 +135,7 @@ class ObjLoader
         auto norm_arr = norm_cont.array;
         for (int i = 0; i < vert_index_cont.length; i++)
         {
-            index_model_pos.insert(vert_arr[ vert_index_cont[i] - 1]);
+            index_model_pos.insert(vert_arr[ vert_index_cont[i] ]);
             if (norm_arr.length)
                 index_model_norm.insert(norm_arr[ norm_index_cont[i] - 1]);
             if (i < mod.indices.length)

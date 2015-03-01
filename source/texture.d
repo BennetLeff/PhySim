@@ -29,8 +29,6 @@ class Texture
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    //writeln(surface.format.Rmask);
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB,
                   GL_UNSIGNED_BYTE, surface.pixels);
 
