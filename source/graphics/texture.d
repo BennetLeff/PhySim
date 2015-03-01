@@ -1,0 +1,48 @@
+module graphics.texture;
+
+import std.stdio;
+import graphics;
+
+class Texture
+{
+  this(string fileName)
+  {
+    // Load the SDL2_image library.
+    DerelictSDL2Image.load();
+
+    IMG_Init( IMG_INIT_PNG | IMG_INIT_JPG );
+
+    SDL_Surface* surface = IMG_Load(cast(const(char*))fileName);
+    if (surface == null)
+      writeln("Error: Texture loading failed");
+
+    // gen space for one texture at GLuint texture
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // texture wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    // handles texture if it takes too much space on screen
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB,
+                  GL_UNSIGNED_BYTE, surface.pixels);
+
+    SDL_FreeSurface(surface);
+  }
+  // unit determines which texture is bound
+  // i.e. multi textures can be bound
+  void bind(uint unit)
+  {
+    assert(unit >= 0 && unit <= 31, "Error: Attempting to bind too many textures");
+
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+  }
+private:
+  GLuint texture;
+  int width, height, numComponents;
+}
