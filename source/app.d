@@ -18,18 +18,24 @@ void main()
     float counter = 0.0f;
 
     Prefab model = new Prefab(new ObjLoader("./res/monkey.obj").loadMeshFile(), new Texture("./res/bricks.jpg"));
+    Prefab model2 = new Prefab(new ObjLoader("./res/cubetextured.obj").loadMeshFile(), new Texture("./res/bill.jpeg"));
 
-    auto models = [model];
+    auto models = [model, model2];
 
-    transform.setPos(vec3(0, 0, 2));
+    transform.setPos(vec3(0, 0, -10));
 
     model.transform = transform;
+    model2.transform = new Transform();
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
-        model.transform.setRot(vec3(0.0, 180, 0.0));
+        model.transform.setRot(vec3(0.0, counter, 0.0));
+        model.transform.setPos(vec3(0, 5 * sin(counter), 0));
+
+        model2.transform.setRot(vec3(counter, 0.0, 0.0));
+        model2.transform.setPos(vec3(5 * sin(counter), 0, 0));
 
         foreach(m; models)
             m.renderInstance(camera);

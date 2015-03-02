@@ -19,13 +19,11 @@ class Transform
 	}
 	mat4 getModel () 
 	{
-		mat4 m4fv = mat4.translation(pos.x, pos.y, pos.z)
-						.rotatex(rot.x * (PI/180))
-						.rotatey(rot.y * (PI/180))
-						.rotatez(rot.z * (PI/180))
-						.scale(scale.x, scale.y, scale.z);
-
-		return m4fv;
+		return mat4.identity.rotatex(rot.x)
+                            .rotatey(rot.y)
+                            .rotatez(rot.z)
+                            .scale(scale.x, scale.y, scale.z)
+                            .translate(pos.x, pos.y, pos.z);                            
 	}
 	vec3 getPos () { return pos; }
 	vec3 getRot () { return rot; }
