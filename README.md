@@ -3,7 +3,7 @@ This project plans to be a physics simulator. It is written in D using Derelict'
 #To-Do's
 The project is still young however a good chunk of necessary code for the graphics backend has been written. 
 - [x] Meshes, Textures, Shaders, Prefabs
-- [ ] Transformations (practically done but there's an issue that's been opened regarding rotation and translation :unamused:)
+- [x] Transformations
 - [ ] User Input plus Camera Movement
 - [ ] Basic Lighting (Point Lights, Directional Lights)
 - [ ] Shadows
