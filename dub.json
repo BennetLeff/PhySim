@@ -4,8 +4,9 @@
 	"copyright": "Copyright © 2015, bennetleff",
 	"authors": ["bennetleff"],
 	"dependencies": {
-        "derelict-sdl2":"~>1.0.0",
+        "derelict-sdl2":"~>1.9.4",
         "derelict-gl3":"1.0.12",
         "gl3n":"1.0.0",
+        "derelict-assimp3":"~>1.0.1",
 	}
 }

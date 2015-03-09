@@ -32,44 +32,40 @@ class AssImp
 
 		numVerts = mesh.mNumVertices;
 
-		vertArray = new vec3[numVerts];
-		normalArray = new vec3[numVerts];
-		uvArray = new vec2[numVerts];
-		int indexcount = 0;
+		for(int i = 0; i < mesh.mNumVertices; i++)
+		{
+			aiVector3D vert = mesh.mVertices[i];
+			vertArray ~= vec3(vert.x, vert.y, vert.z);
 
-		for (uint i = 0; i < mesh.mNumFaces; i++)
+			aiVector3D uvw = mesh.mTextureCoords[0][i];
+			uvArray ~= vec2(uvw.x, uvw.y);
+		
+			aiVector3D n = mesh.mNormals[i];
+			normalArray ~= vec3(n.x, n.y, n.z);
+		}
+
+		
+		for(int i = 0; i < mesh.mNumFaces; i++)
 		{
 			const aiFace face = mesh.mFaces[i];
-			indexcount += face.mNumIndices;
-
-			for (int j = 0; j < 3; j++)
-			{
-				aiVector3D uv = mesh.mTextureCoords[0][face.mIndices[j]];
-				uvArr.insert(vec2(uv.x, uv.y));
-
-				aiVector3D normal = mesh.mNormals[face.mIndices[j]];
-				normalArr.insert(vec3(normal.x, normal.y, normal.z));
-
-				aiVector3D pos = mesh.mVertices[face.mIndices[j]];
-				vertArr.insert(vec3(pos.x, pos.y, pos.z));
-			}
+			
+			indices ~= face.mIndices[0];
+			indices ~= face.mIndices[1];
+			indices ~= face.mIndices[2];
+			
 		}
 
-		for (int z = 0; z < indexcount + 1; z++)
-		{
-			indices.insert(z);
-		}
-
-		//writeln(indices.array.length);
-		return new Mesh(makeIndexedModel(vertArr.array, normalArr.array, uvArr.array, indices.array));		
+		return new Mesh(makeIndexedModel(vertArray, normalArray, uvArray, indices));		
 	}
 private:
-	vec3 vertArray[];
-	vec3 normalArray[];
-	vec2 uvArray[];
+	vec3 vertArray[] = [];
+	vec3 normalArray[] = [];
+	vec2 uvArray[] = [];
+	uint[] indices = [];
 	auto vertArr = make!(Array!vec3)();
 	auto normalArr = make!(Array!vec3)();
 	auto uvArr = make!(Array!vec2)();
-	auto indices = make!(Array!uint)();
+	//auto indices = make!(Array!uint)();
+	//auto indices = new uint[];
 	int numVerts;
 }
