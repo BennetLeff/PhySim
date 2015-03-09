@@ -15,7 +15,7 @@ class Prefab
 	{
 		asset.shader = new Shader("./res/basicShader");
 		asset.texture = new Texture("./res/bricks.jpg");
-		asset.mesh = new ObjLoader("./res/cubetextured.obj").loadMeshFile();
+		//asset.mesh = new ObjLoader("./res/cubetextured.obj").loadMeshFile();
 	}
 	this(Asset asset)
 	{
