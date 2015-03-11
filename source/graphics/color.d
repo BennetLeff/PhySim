@@ -1,5 +1,7 @@
 module graphics.color;
+
 import std.stdio;
+import core;
 
 class Color
 {
@@ -19,21 +21,6 @@ class Color
 		this.a = 1.0;
 		colorArray = [this.r, this.g, this.b, this.a];
 	}
-	// takes a string r, g, b, or a and returns it's val
-	// as an array
-	// useful for OpenGL shader uniforms
-	float[] rgbaByArray(string rgba)
-	{
-		if (rgba == "r")
-			return [r];
-		else if (rgba == "g") 
-			return [g];
-		else if (rgba == "b") 
-			return [b];
-		else if (rgba == "a") 
-			return [a];
-		return [0];
-	}
 	float[] byArray()
 	{
 		colorArray[0] = r;
@@ -42,6 +29,11 @@ class Color
 		colorArray[3] = a;
 		return colorArray;
 	}
+	vec3 byVec()
+	{
+		return vec3(r, g, b);
+	}
+
 public:
 	float r;
 	float g;

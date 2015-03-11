@@ -1,13 +1,13 @@
-#version 120
+#version 330
 
-attribute vec3 position;
-attribute vec2 texCoord;
-attribute vec3 normal;
+in vec3 position;
+in vec2 texCoord;
+in vec3 normal;
 
 uniform mat4 transform;
 
-varying vec2 texCoord0;
-varying vec3 normal0;
+out vec2 texCoord0;
+out vec3 normal0;
 
 void main()
 {

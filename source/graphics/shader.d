@@ -4,6 +4,7 @@ import std.stdio;
 import std.string;
 import graphics;
 import core;
+import components;
 
 class Shader
 {
@@ -29,6 +30,8 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
         uniforms[COLOR_U] = glGetUniformLocation(program, "color");
+        uniforms[LIGHT_POS_U] = glGetUniformLocation(program, "light.position");
+        uniforms[LIGHT_COL_U] = glGetUniformLocation(program, "light.intensities");
 
         if (glGetError())
         {
@@ -43,11 +46,14 @@ class Shader
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
         glUniform1fv(uniforms[COLOR_U], 3, color.ptr);
     }
-    void update(Transform transform, Camera camera)
+    void update(Transform transform, Camera camera, PointLight pointLight)
     {
         mat4 model = camera.getViewProjection() * transform.getModel();
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
         glUniform1fv(uniforms[COLOR_U], 3, [1.0f, 0.0f, 0.0f].ptr);
+        // lighting uniforms
+        glUniform1fv(uniforms[LIGHT_POS_U], 3, [pointLight.pos.x, pointLight.pos.y, pointLight.pos.z].ptr);
+        glUniform1fv(uniforms[LIGHT_COL_U], 3, [pointLight.intensities.x, pointLight.intensities.y, pointLight.intensities.z].ptr);
     }
     void bind()
     {
@@ -112,6 +118,8 @@ private:
     {
         TRANSFORM_U,
         COLOR_U,
+        LIGHT_POS_U,
+        LIGHT_COL_U,
         NUM_UNIFORMS
     };
 }

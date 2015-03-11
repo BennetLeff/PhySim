@@ -4,6 +4,7 @@ import std.array;
 import std.math;
 import core;
 import graphics;
+import components;
 
 import graphics.assimp;
 
@@ -21,11 +22,9 @@ void main()
 
     AssImp asset = new AssImp();
 
-    writeln("\n Asset Importer \n ");
-
     Mesh m = asset.loadMesh("./res/monkey.obj");
 
-    Prefab fab2 = new Prefab(m, new Texture("./res/blacktile.jpg"));
+    Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
 
     fab2.transform = new Transform();
 
