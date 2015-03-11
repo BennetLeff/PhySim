@@ -33,8 +33,8 @@ void main()
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
-        fab2.transform.setRot(vec3(0.0, counter / 3.0, 0.0));
-        fab2.transform.setPos(vec3(0.0, sin(counter / 5), 3));
+        fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
+        fab2.transform.pos(vec3(0.0, sin(counter / 5), 3));
 
         fab2.renderInstance(camera);
 
