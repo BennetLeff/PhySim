@@ -20,7 +20,6 @@ class PointLight : Light
 		super (col);
 		this.position = pos;
 		intensities = col.byVec();
-		writeln(intensities);
 	}
 
 	vec3 position;

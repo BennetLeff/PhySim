@@ -16,7 +16,7 @@ class Prefab
 	{
 		asset.shader = new Shader("./res/basicShader");
 		asset.texture = new Texture("./res/bricks.jpg");
-		pL = new PointLight(new Color(1.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 0.0f));
+		pL = new PointLight(new Color(256f, 256f, 256f), vec3(1.0f, 1.0f, 1.0f));
 		//asset.mesh = new ObjLoader("./res/cubetextured.obj").loadMeshFile();
 	}
 	this(Asset asset)
@@ -28,14 +28,14 @@ class Prefab
 		asset.mesh = mesh;
 		asset.texture = null;
 		asset.shader = new Shader("./res/basicShader");
-		pL = new PointLight(new Color(1.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 0.0f));
+		pL = new PointLight(new Color(256f, 256f, 256f), vec3(1.0f, 1.0f, 1.0f));
 	}
 	this(Mesh mesh, Texture texture)
 	{
 		asset.mesh = mesh;
 		asset.texture = texture;
 		asset.shader = new Shader("./res/basicShader");
-		pL = new PointLight(new Color(1.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 0.0f));
+		pL = new PointLight(new Color(256f, 256f, 256f), vec3(1.0f, 1.0f, 1.0f));
 	}
 	void renderInstance(Camera cam)
 	{

@@ -24,16 +24,18 @@ void main()
 
     Mesh m = asset.loadMesh("./res/monkey.obj");
 
-    Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
+    Prefab fab2 = new Prefab(m, new Texture("./res/pitcher.jpg"));
 
     fab2.transform = new Transform();
+
+    fab2.transform.pos(vec3(0.0, 0.0, 3));
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
         fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
-        fab2.transform.pos(vec3(0.0, sin(counter / 5), 3));
+        //fab2.transform.pos(vec3(sin(counter / 5), 0.0, 3));
 
         fab2.renderInstance(camera);
 

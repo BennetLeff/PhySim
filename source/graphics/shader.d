@@ -29,9 +29,10 @@ class Shader
         checkShaderError(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
+        uniforms[CAMERA_U] = glGetUniformLocation(program, "camera");
         uniforms[COLOR_U] = glGetUniformLocation(program, "color");
-        uniforms[LIGHT_POS_U] = glGetUniformLocation(program, "light.position");
-        uniforms[LIGHT_COL_U] = glGetUniformLocation(program, "light.intensities");
+        uniforms[LIGHT_POS_U] = glGetUniformLocation(program, "lightPosition");
+        uniforms[LIGHT_COL_U] = glGetUniformLocation(program, "lightIntensity");
 
         if (glGetError())
         {
@@ -42,17 +43,19 @@ class Shader
     }
     void update(Transform transform, Camera camera, float[] color)
     {
-        mat4 model = camera.getViewProjection() * transform.getModel();
-        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
+        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
+        glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
         glUniform1fv(uniforms[COLOR_U], 3, color.ptr);
     }
     void update(Transform transform, Camera camera, PointLight pointLight)
     {
-        mat4 model = camera.getViewProjection() * transform.getModel();
-        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, model.value_ptr);
-        glUniform1fv(uniforms[COLOR_U], 3, [1.0f, 0.0f, 0.0f].ptr);
+        glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
+        glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
+        //writeln(pointLight.intensities);
+        glUniform1fv(uniforms[COLOR_U], 3, [pointLight.intensities.x, pointLight.intensities.y, pointLight.intensities.z].ptr);
         // lighting uniforms
-        glUniform1fv(uniforms[LIGHT_POS_U], 3, [pointLight.pos.x, pointLight.pos.y, pointLight.pos.z].ptr);
+        glUniform1fv(uniforms[LIGHT_POS_U], 3, [pointLight.position.x, pointLight.position.y, pointLight.position.z].ptr);
+        //glUniform1fv(uniforms[LIGHT_COL_U], 3, [pointLight.intensities.x, pointLight.intensities.y, pointLight.intensities.z].ptr);
         glUniform1fv(uniforms[LIGHT_COL_U], 3, [pointLight.intensities.x, pointLight.intensities.y, pointLight.intensities.z].ptr);
     }
     void bind()
@@ -117,6 +120,7 @@ private:
     enum 
     {
         TRANSFORM_U,
+        CAMERA_U,
         COLOR_U,
         LIGHT_POS_U,
         LIGHT_COL_U,
