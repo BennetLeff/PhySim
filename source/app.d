@@ -24,7 +24,7 @@ void main()
 
     Mesh m = asset.loadMesh("./res/monkey.obj");
 
-    Prefab fab2 = new Prefab(m, new Texture("./res/pitcher.jpg"));
+    Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
 
     fab2.transform = new Transform();
 

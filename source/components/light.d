@@ -10,6 +10,7 @@ class Light : Component
 	{
 		color = col;
 	}
+public:
 	Color color;
 }
 

@@ -10,7 +10,7 @@ class Color
 		this.r = r / 255;
 		this.g = g / 255;
 		this.b = b / 255;
-		this.a = a / 255;
+		this.a = a;
 		colorArray = [this.r, this.g, this.b, this.a];
 	}
 	this(float r, float g, float b)
