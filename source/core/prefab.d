@@ -17,6 +17,7 @@ class Prefab
 		asset.shader = new Shader("./res/basicShader");
 		asset.texture = new Texture("./res/bricks.jpg");
 		pL = new PointLight(col, pointLightPos);
+		pLights[0] = pL;
 	}
 	this(Asset asset)
 	{
@@ -28,6 +29,7 @@ class Prefab
 		asset.texture = null;
 		asset.shader = new Shader("./res/basicShader");
 		pL = new PointLight(col, pointLightPos);
+		pLights[0] = pL;
 	}
 	this(Mesh mesh, Texture texture)
 	{
@@ -35,17 +37,19 @@ class Prefab
 		asset.texture = texture;
 		asset.shader = new Shader("./res/basicShader");
 		pL = new PointLight(col, pointLightPos);
+		pLights[0] = pL;
 	}
 	void renderInstance(Camera cam)
 	{
 		asset.shader.bind();
-		asset.shader.update(transform, cam, pL);
+		asset.shader.update(transform, cam, pLights);
 		asset.texture.bind(0);
 		asset.mesh.draw();
 	}
 private:
 	Asset asset;
 	PointLight pL;
+	PointLight[1] pLights;
 	vec3 pointLightPos = vec3(-1.0f, 0.0f, 0.0f);
 	Color col = new Color(255, 255, 255);
 public:

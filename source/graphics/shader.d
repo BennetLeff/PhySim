@@ -2,6 +2,7 @@ module graphics.shader;
 
 import std.stdio;
 import std.string;
+import std.conv;
 import graphics;
 import core;
 import components;
@@ -30,8 +31,8 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
         uniforms[CAMERA_U] = glGetUniformLocation(program, "camera");
-        uniforms[COLOR_U] = glGetUniformLocation(program, "light.color");
-        uniforms[LIGHT_POS_U] = glGetUniformLocation(program, "light.position");
+        
+            
 
         if (glGetError())
         {
@@ -40,20 +41,32 @@ class Shader
             write("\n");
         }
     }
+    void updateLights(PointLight[] pointLights)
+    {
+        for (int i = 0; i < pointLights.length; i++)
+        {
+            uniforms[COLOR_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].color").toStringz());
+            uniforms[LIGHT_POS_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].position").toStringz());
+
+            glUniform1fv(uniforms[LIGHT_POS_U], 3, pointLights[i].position.value_ptr);
+            glUniform1fv(uniforms[COLOR_U], 3, pointLights[i].color.byArray().ptr);
+        }
+    }
     void update(Transform transform, Camera camera, vec3 color)
     {
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
         glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
         glUniform1fv(uniforms[COLOR_U], 3, color.value_ptr);
     }
-    void update(Transform transform, Camera camera, PointLight pointLight)
+    void update(Transform transform, Camera camera, PointLight[] pointLights)
     {
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
         glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
         // lighting uniforms
-        glUniform1fv(uniforms[LIGHT_POS_U], 3, pointLight.position.value_ptr);
-        glUniform1fv(uniforms[COLOR_U], 3, pointLight.color.byArray().ptr);
-
+        //for (int i = 0; i < pointLights.length; i++)
+        //{
+        updateLights(pointLights);
+        //}
     }
     void bind()
     {
