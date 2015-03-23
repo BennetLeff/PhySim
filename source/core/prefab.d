@@ -47,7 +47,7 @@ private:
 	Asset asset;
 	PointLight pL;
 	vec3 pointLightPos = vec3(-1.0f, 0.0f, 0.0f);
-	Color col = new Color(128f, 147f, 255f);
+	Color col = new Color(255, 255, 255);
 public:
 	Transform transform;
 }
