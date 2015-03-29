@@ -3,12 +3,19 @@
 #define MAXLIGHTS 10
 
 uniform sampler2D diffuse;
+uniform float materialShininess;
+uniform vec3 materialSpecularColor;
+uniform vec3 cameraPosition;
 
 uniform struct Light
 {
     vec3 position;
     float[3] color;
-} lights[1];
+    float attenuation;
+    float ambientCoefficient;
+} lights[MAXLIGHTS];
+
+uniform int numLights;
 
 uniform mat4 transform;
 
@@ -19,46 +26,51 @@ in vec3 position0;
 out vec4 finalColor;
 
 
-vec3 applyLight(Light light)
+vec3 applyLight(Light light, vec4 surfaceColor, vec3 surfaceToCamera, vec3 surfacePos)
 {
-    vec3 lightVec = vec3(light.color[0], light.color[1], light.color[2]);
+    vec3 intensities = vec3(light.color[0], light.color[1], light.color[2]);
 
     mat3 normalMatrix = transpose(inverse(mat3(transform)));
-    vec3 normal = normalize(normalMatrix * normal0);
+    vec3 normal = normalize(normalMatrix * normal0);    
 
-    //calculate the location of this fragment (pixel) in world coordinates
-    vec3 fragPosition = vec3(transform * vec4(position0, 1));
+    vec3 surfaceToLight = normalize(light.position - surfacePos);
+
+    //ambient
+    vec3 ambient = light.ambientCoefficient * surfaceColor.rgb * intensities;
+
+    //diffuse
+    float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
+    vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * intensities;
+
+    //specular
+    float specularCoefficient = 0.0;
+    if(diffuseCoefficient > 0.0)
+    {
+        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), materialShininess);
+    }
+    vec3 specular = specularCoefficient * materialSpecularColor * intensities;
     
-    //calculate the vector from this pixels surface to the light source
-    vec3 surfaceToLight = light.position - fragPosition;
+    //attenuation
+    float distanceToLight = length(light.position - surfacePos);
+    float attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
 
-    //calculate the cosine of the angle of incidence
-    float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
-    brightness = clamp(brightness, 0, 1);
-
-    //calculate final color of the pixel, based on:
-    // 1. The angle of incidence: brightness
-    // 2. The color/intensities of the light: light.intensities
-    // 3. The texture and texture coord: texture(tex, fragTexCoord)
-    vec4 surfaceColor = texture(diffuse, texCoord0);
-
-    return vec3(brightness * lightVec *  surfaceColor.rgb);
+    return ambient + attenuation*(diffuse + specular);
 }
 
 
 void main()
 {
     vec4 surfaceColor = texture(diffuse, texCoord0);
+    vec3 surfacePos = vec3(transform * vec4(position0, 1));
+    vec3 surfaceToCamera = normalize(cameraPosition - surfacePos);
 
     //combine color from all the lights
     vec3 linearColor = vec3(0);
-    for(int i = 0; i < 1; i++){
-        linearColor += applyLight(lights[i]);
+    for(int i = 0; i < numLights; i++){
+        linearColor += applyLight(lights[i], surfaceColor, surfaceToCamera, surfacePos);
     }
     
     //final color (after gamma correction)
     vec3 gamma = vec3(1.0/2.2);
     finalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
-
-    //finalColor = applyLight(lights[0]);
 }

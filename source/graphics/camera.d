@@ -15,6 +15,8 @@ class Camera
 	{
 		return perspective * mat4.look_at(position, position + forward, up);
 	}
+	@property ref vec3 pos () { return position; }
+	@property ref vec3 pos (vec3 pos) { return position = pos; }
 private:
 	mat4 perspective;
 	vec3 position;

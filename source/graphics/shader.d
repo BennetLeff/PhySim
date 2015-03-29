@@ -31,9 +31,11 @@ class Shader
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
         uniforms[CAMERA_U] = glGetUniformLocation(program, "camera");
+        uniforms[CAMERA_POS_U] = glGetUniformLocation(program, "cameraPosition");
+        uniforms[MAT_SHINE_U] = glGetUniformLocation(program, "materialShininess");
+        uniforms[MAT_SPECULAR_COL_U] = glGetUniformLocation(program, "materialSpecularColor");
+        uniforms[NUM_LIGHTS_U] = glGetUniformLocation(program, "numLights");
         
-            
-
         if (glGetError())
         {
             write("Error in shader class: ");
@@ -43,13 +45,20 @@ class Shader
     }
     void updateLights(PointLight[] pointLights)
     {
+        int[] numLights = [cast(int)pointLights.length];
+
         for (int i = 0; i < pointLights.length; i++)
         {
             uniforms[COLOR_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].color").toStringz());
             uniforms[LIGHT_POS_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].position").toStringz());
+            uniforms[ATTEN_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].attenuation").toStringz());
+            uniforms[AMBIENT_CO_U] = glGetUniformLocation(program, ("lights[" ~ to!string(i) ~ "].ambientCoefficient").toStringz());
 
             glUniform1fv(uniforms[LIGHT_POS_U], 3, pointLights[i].position.value_ptr);
             glUniform1fv(uniforms[COLOR_U], 3, pointLights[i].color.byArray().ptr);
+            glUniform1fv(uniforms[ATTEN_U], 1, pointLights[i].attenuation.ptr);
+            glUniform1fv(uniforms[AMBIENT_CO_U], 1, pointLights[i].ambientCoefficient.ptr);
+            glUniform1iv(uniforms[NUM_LIGHTS_U], 1, numLights.ptr);
         }
     }
     void update(Transform transform, Camera camera, vec3 color)
@@ -62,11 +71,12 @@ class Shader
     {
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
         glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
+        glUniform1fv(uniforms[CAMERA_POS_U], 3, camera.pos.value_ptr);
         // lighting uniforms
-        //for (int i = 0; i < pointLights.length; i++)
-        //{
         updateLights(pointLights);
-        //}
+        float[] shine = [80.0f];
+        glUniform1fv(uniforms[MAT_SHINE_U], 1, shine.ptr);
+        glUniform1fv(uniforms[MAT_SPECULAR_COL_U], 3, vec3(1.0, 1.0, 1.0).value_ptr);
     }
     void bind()
     {
@@ -131,8 +141,14 @@ private:
     {
         TRANSFORM_U,
         CAMERA_U,
+        CAMERA_POS_U,
         COLOR_U,
         LIGHT_POS_U,
+        NUM_LIGHTS_U,
+        MAT_SHINE_U,
+        MAT_SPECULAR_COL_U,
+        ATTEN_U,
+        AMBIENT_CO_U,
         NUM_UNIFORMS
     };
 }
