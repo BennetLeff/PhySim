@@ -71,12 +71,12 @@ class Shader
     {
         glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GL_TRUE, transform.getModel().value_ptr);
         glUniformMatrix4fv(uniforms[CAMERA_U], 1, GL_TRUE, camera.getViewProjection().value_ptr);
-        glUniform1fv(uniforms[CAMERA_POS_U], 3, camera.pos.value_ptr);
+        glUniform1fv(uniforms[CAMERA_POS_U], 1, camera.pos.value_ptr);
         // lighting uniforms
         updateLights(pointLights);
         float[] shine = [80.0f];
         glUniform1fv(uniforms[MAT_SHINE_U], 1, shine.ptr);
-        glUniform1fv(uniforms[MAT_SPECULAR_COL_U], 3, vec3(1.0, 1.0, 1.0).value_ptr);
+        glUniform1fv(uniforms[MAT_SPECULAR_COL_U], 1, vec3(1.0, 1.0, 1.0).value_ptr);
     }
     void bind()
     {

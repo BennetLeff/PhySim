@@ -21,7 +21,7 @@ class PointLight : Light
 		super (col);
 		this.position = pos;
 		intensities = col.byVec();
-		atten = [1.0f];
+		atten = [0.2f];
 		ambCoefficient = [0.005f];
 	}
 

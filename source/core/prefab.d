@@ -57,10 +57,10 @@ private:
 	PointLight pL;
 	PointLight pL2;
 	PointLight[2] pLights;
-	vec3 pointLightPos = vec3(-20.0f, 0.0f, 0.0f);
+	vec3 pointLightPos = vec3(0.0f, 3.0f, 0.0f);
 	Color col = new Color(0, 0, 255);
-	vec3 pointLightPos2 = vec3(20.0f, 0.0f, 0.0f);
-	Color col2 = new Color(0, 255, 0);
+	vec3 pointLightPos2 = vec3(3.0f, 0.0f, 0.0f);
+	Color col2 = new Color(255, 0, 0);
 public:
 	Transform transform;
 }
