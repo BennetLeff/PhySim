@@ -3,6 +3,7 @@ module graphics.display;
 import std.stdio;
 import std.string;
 import graphics;
+import core;
 
 class Display
 {
@@ -57,7 +58,34 @@ class Display
             if (e.type == SDL_QUIT)
             {
                 isDisplayClosed = true;
+            }        
+            else
+            {
+                switch( e.type ){
+                    case SDL_KEYDOWN:
+                        inputManager.pressKey(e.key.keysym.sym);
+                        writeln(e.key.keysym.sym);
+                        break;
+
+                    case SDL_KEYUP:
+                        inputManager.releaseKey(e.key.keysym.sym);
+                        writeln("called");
+                        break;
+
+                    default:
+                        break;
+                }
+                // add any wanted keycodes checks here
+                if (inputManager.isKeyPressed(119))
+                {
+                   writeln(inputManager.keyMap);
+                }
+                if (inputManager.isKeyPressed(97))
+                {
+                    writeln(inputManager.keyMap);
+                }
             }
+            
         }
         
     }
@@ -73,5 +101,6 @@ class Display
 private:
     SDL_Window* window;
     SDL_GLContext glContext;
+    Input inputManager;
     bool isDisplayClosed;
 }

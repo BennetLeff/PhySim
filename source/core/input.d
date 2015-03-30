@@ -1,10 +1,10 @@
-module input;
+module core.input;
 
 import graphics;
 import core;
 import components;
 
-class Input
+struct Input
 {	
 	void pressKey(uint keyID)
 	{
@@ -17,10 +17,10 @@ class Input
 	bool isKeyPressed(uint keyID)
 	{
 		if (keyID in keyMap)
-			return true;
+			return keyMap[keyID];
 		else
 			return false;
 	}
-private:
+	
 	bool[uint] keyMap;
 }
