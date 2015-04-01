@@ -42,8 +42,10 @@ class Prefab
 		asset.shader = new Shader("./res/basicShader");
 		pL = new PointLight(col, pointLightPos);
 		pL2 = new PointLight(col2, pointLightPos2);
+		pL3 = new PointLight(col3, pointLightPos3);
 		pLights[0] = pL;
 		pLights[1] = pL2;
+		pLights[2] = pL3;
 	}
 	void renderInstance(Camera cam)
 	{
@@ -56,11 +58,14 @@ private:
 	Asset asset;
 	PointLight pL;
 	PointLight pL2;
-	PointLight[2] pLights;
+	PointLight pL3;
+	PointLight[3] pLights;
 	vec3 pointLightPos = vec3(0.0f, 3.0f, 0.0f);
 	Color col = new Color(0, 0, 255);
 	vec3 pointLightPos2 = vec3(3.0f, 0.0f, 0.0f);
 	Color col2 = new Color(255, 0, 0);
+	vec3 pointLightPos3 = vec3(3.0f, 0.0f, 3.0f);
+	Color col3 = new Color(0, 255, 0);
 public:
 	Transform transform;
 }

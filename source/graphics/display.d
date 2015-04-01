@@ -64,25 +64,14 @@ class Display
                 switch( e.type ){
                     case SDL_KEYDOWN:
                         inputManager.pressKey(e.key.keysym.sym);
-                        writeln(e.key.keysym.sym);
                         break;
 
                     case SDL_KEYUP:
                         inputManager.releaseKey(e.key.keysym.sym);
-                        writeln("called");
                         break;
 
                     default:
                         break;
-                }
-                // add any wanted keycodes checks here
-                if (inputManager.isKeyPressed(119))
-                {
-                   writeln(inputManager.keyMap);
-                }
-                if (inputManager.isKeyPressed(97))
-                {
-                    writeln(inputManager.keyMap);
                 }
             }
             
@@ -97,6 +86,10 @@ class Display
     {
         glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    Input getInputManager()
+    {
+        return inputManager;
     }
 private:
     SDL_Window* window;

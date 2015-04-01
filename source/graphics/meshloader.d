@@ -1,13 +1,8 @@
 module graphics.meshloader;
 
-import std.stdio;
-import std.regex;
-import std.string;
-import std.container;
-import std.conv;
-import std.range;
-import graphics;
-import core;
+import std.stdio, std.container, std.range;
+import core, graphics;
+import derelict.assimp3.assimp;
 
 struct IndexedModel
 {
@@ -16,145 +11,65 @@ struct IndexedModel
     vec2[] texCoords;
     uint[] indices;
 }
-class ObjLoader
+
+class MeshLoader
 {
-	this(string fileName)
+	this()
 	{
-		// currently checking if the file is an .obj
-		if (!checkValidFile(fileName))
-            this.fileName = fileName;
-        else
-            stderr.writeln(format("File format %s not supported", match(fileName, r".{1,3}$")));
-    }
-    bool checkValidFile(string fileName)
-	{
-		bool isValid;
-		return match(fileName, r".obj$") ? isValid = true : isValid = false;
+		DerelictASSIMP3.load();
 	}
-	Mesh loadMeshFile() {
-        auto f = File(this.fileName);      // open file for reading,
-        scope(exit) f.close();              //   and close the file when we're done.
-        foreach (str; f.byLine)             // read every line in the file,
-        {
-        	string[] tokens = cast(string[])str.split(" ");
-            if (!(tokens.length == 0 || tokens[0] == "#"))
-            {
-            	if (tokens[0] == "v")
-            	{
-            		vertices.insert(vec3(to!float(tokens[1]),
-            								 	to!float(tokens[2]),
-            								 	to!float(tokens[3])));
-            	}
-            	else if (tokens[0] == "f")
-            	{
-                    if (tokens[1].split("/").length == 2)
-                    {    
-                        indices.insert((to!uint(tokens[1].split("/")[0]) - 1));
-                		indices.insert((to!uint(tokens[2].split("/")[0]) - 1));
-                        indices.insert((to!uint(tokens[3].split("/")[0]) - 1));
+	IndexedModel makeIndexedModel(vec3[] verts, vec3[] norms, vec2[] uvs, uint[] indices)
+	{
+		IndexedModel model;
+		model.pos = verts;
+		model.normals = norms;
+		model.texCoords = uvs;
+		model.indices = indices;
+		
+		return model;
+	}
+	Mesh loadMesh(const char* fileName)
+	{
+		const aiScene* scene = aiImportFile(fileName, aiProcessPreset_TargetRealtime_Fast | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+		const aiMesh* mesh = scene.mMeshes[0];
 
-                        uvIndex.insert(to!int(tokens[1].split("/")[1]));
-                        uvIndex.insert(to!int(tokens[2].split("/")[1]));
-                        uvIndex.insert(to!int(tokens[3].split("/")[1]));
-                    }
-                    else if (tokens[1].split("/").length == 3)
-                    {   
-                        indices.insert((to!uint(tokens[1].split("/")[0]) - 1));
-                        indices.insert((to!uint(tokens[2].split("/")[0]) - 1));
-                        indices.insert((to!uint(tokens[3].split("/")[0]) - 1));
-                        // set second num after slash to texture vert
-                        uvIndex.insert(to!int(tokens[1].split("/")[1]));
-                        uvIndex.insert(to!int(tokens[2].split("/")[1]));
-                        uvIndex.insert(to!int(tokens[3].split("/")[1]));
-                        // set third num to be normals
-                        normalIndex.insert(to!int(tokens[1].split("/")[2]));
-                        normalIndex.insert(to!int(tokens[2].split("/")[2]));
-                        normalIndex.insert(to!int(tokens[3].split("/")[2]));
-                        }
-                    else 
-                    {
-                        indices.insert((to!uint(tokens[1]) - 1));
-                        indices.insert((to!uint(tokens[2]) - 1));
-                        indices.insert((to!uint(tokens[3]) - 1));
-                    }
-                }
-                else if (tokens[0] == "vn")
-                {
-                    normals.insert(vec3(to!float(tokens[1]),
-                                        to!float(tokens[2]),
-                                        to!float(tokens[3])));
-                }
-                else if (tokens[0] == "vt")
-                {
-                    tempUVs.insert(vec2(to!float(tokens[1]), to!float(tokens[2])));
-                }
-            }
-        }
+		numVerts = mesh.mNumVertices;
 
-        if (tempUVs.length)
-            return new Mesh(makeIndexedModel(vertices, tempUVs, normals, indices, uvIndex, normalIndex));
-        else
-        {
-            IndexedModel mod = makeSimpleModel(vertices, normals, indices, normalIndex);
-            return new Mesh(mod.pos, mod.indices);
-        }
-    }    
-    private IndexedModel makeIndexedModel(Array!vec3 vertCont, Array!vec2 texCont, Array!vec3 normCont, Array!uint vertIndexCont, Array!int uvIndexCont, Array!int normIndexCont)
-    {
-        IndexedModel mod;
-        
-        mod.indices = vertIndexCont.array;
-        auto vertArr = vertCont.array;
-        auto uvIndexArr = uvIndexCont.array;
-        auto texArr = texCont.array;
-        auto normArr = normCont.array;
-        for (int i = 0; i < vertIndexCont.length; i++)
-        {
-            indexModelPos.insert(vertArr[ vertIndexCont[i]]);
-            if (normArr.length)
-                indexModelNorm.insert(normArr[ normIndexCont[i] - 1]);
-            if (uvIndex.length)
-                indexModelTex.insert(texArr[ uvIndexArr[i] - 1 ]);
-            if (i < indices.length)
-                mod.indices[i] = i;
-        }
-        mod.pos = indexModelPos.array;
-        mod.texCoords = indexModelTex.array;
-        mod.normals = indexModelNorm.array;
+		for(int i = 0; i < mesh.mNumVertices; i++)
+		{
+			aiVector3D vert = mesh.mVertices[i];
+			vertArray ~= vec3(vert.x, vert.y, vert.z);
 
-        return mod;
-    }
-    private IndexedModel makeSimpleModel(Array!vec3 vertCont, Array!vec3 normCont, Array!uint vertIndexCont, Array!int normIndexCont)
-    {
-        IndexedModel mod;
-        
-        mod.indices = vertIndexCont.array;
-        auto vertArr = vertCont.array;
-        auto normArr = normCont.array;
-        for (int i = 0; i < vertIndexCont.length; i++)
-        {
-            indexModelPos.insert(vertArr[ vertIndexCont[i] ]);
-            if (normArr.length)
-                indexModelNorm.insert(normArr[ normIndexCont[i] - 1]);
-            if (i < mod.indices.length)
-                mod.indices[i] = i;
-        }
-        mod.pos = indexModelPos.array;
-        mod.normals = indexModelNorm.array;
+			//if (mesh.HasTextureCoords())
+			//{
+				aiVector3D uvw = mesh.mTextureCoords[0][i];
+				uvArray ~= vec2(uvw.x, uvw.y);
+			//}
 
-        return mod;
-    }
+			//if (mesh.HasNormals())
+			//{
+				aiVector3D n = mesh.mNormals[i];
+				normalArray ~= vec3(n.x, n.y, n.z);
+			//}
+		}
+
+		
+		for(int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const aiFace face = mesh.mFaces[i];
+			
+			indices ~= face.mIndices[0];
+			indices ~= face.mIndices[1];
+			indices ~= face.mIndices[2];
+		}
+
+		return new Mesh(makeIndexedModel(vertArray, normalArray, uvArray, indices));		
+	}
 private:
-	auto vertices = make!(Array!vec3)();
-	auto indices = make!(Array!uint)();
-    auto normals = make!(Array!vec3)();
+	vec3 vertArray[] = [];
+	vec3 normalArray[] = [];
+	vec2 uvArray[] = [];
+	uint[] indices = [];
 
-    auto uvIndex = make!(Array!int)();
-    auto tempUVs = make!(Array!vec2)();
-    auto normalIndex = make!(Array!int)();
-
-    auto indexModelPos = make!(Array!vec3)();
-    auto indexModelNorm = make!(Array!vec3)();
-    auto indexModelTex = make!(Array!vec2)();
-    string fileName;
+	int numVerts;
 }
