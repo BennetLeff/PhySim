@@ -5,6 +5,7 @@ import std.math;
 import core;
 import graphics;
 import components;
+import physics;
 
 void main()
 {
@@ -14,7 +15,7 @@ void main()
 
     Transform transform = new Transform();
 
-    Camera camera = new Camera(vec3(0, 0, -20), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
+    Camera camera = new Camera(vec3(0, 0, -10), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
     float counter = 0.0f;
 
@@ -27,11 +28,21 @@ void main()
     fab2.transform.pos(vec3(0.0, 0.0, 10));
 
     Input manager;
+    
+    double t = 0;
+    double dt = 1.0 / 60.0;
+
+    State state = new State(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0));
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
+        state.update(t);
+
+        t += dt;
+
+        /*
         // currently just used to navigate scene
         manager = disp.getInputManager();
 
@@ -65,11 +76,14 @@ void main()
         {
             camera.pos(vec3(camera.pos.x, camera.pos.y - 1, camera.pos.z));
         }
-
+        */
+        
         fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
-        //fab2.transform.pos(vec3(sin(counter / 5), 0.0, 3));
+
+        fab2.transform.pos = state.pos;
 
         fab2.renderInstance(camera);
+        
 
         disp.update();
         counter += 0.05f;

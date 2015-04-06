@@ -45,7 +45,6 @@ class Display
         DerelictGL3.reload();
 
         glEnable(GL_DEPTH_TEST);
-
     }
     void update()
     {
@@ -73,10 +72,8 @@ class Display
                     default:
                         break;
                 }
-            }
-            
+            }       
         }
-        
     }
     bool isClosed()
     {
