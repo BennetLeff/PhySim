@@ -5,7 +5,11 @@ import core;
 
 class State
 {
-    this(vec3 vel, vec3 pos)
+    vec3 accel;
+    vec3 velocity;
+    vec3 position; 
+    
+    this(vec3 pos, vec3 vel)
     {
         this.vel = vel;
         this.pos = pos;
@@ -23,7 +27,5 @@ class State
     @property ref vec3 vel (vec3 v) { return velocity = v; }
     @property ref vec3 pos (vec3 p) { return position = p; }
 private:
-    vec3 accel;
-    vec3 velocity;
-    vec3 position;    
+   
 }

@@ -19,30 +19,34 @@ void main()
 
     float counter = 0.0f;
 
-    Mesh m = new MeshLoader().loadMesh("./res/monkey.obj");
+    Mesh m = new MeshLoader().loadMesh("./res/housemodel/OBJ/FarmhouseOBJ.obj");
 
-    Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
+    Prefab fab2 = new Prefab(m, new Texture("./res/housemodel/Textures/FarmhouseTexture.jpg"));
 
     fab2.transform = new Transform();
 
-    fab2.transform.pos(vec3(0.0, 0.0, 10));
+    fab2.transform.pos(vec3(0.0, 0.0, 20));
 
     Input manager;
     
     double t = 0;
     double dt = 1.0 / 60.0;
 
-    State state = new State(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0));
+    //RigidBody rBody = new RigidBody(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 3.0));
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
-        state.update(t);
+        //rBody.addForce(vec3(0, 0.0981, 0));
+
+        //rBody.update(t);
 
         t += dt;
 
-        /*
+        //writeln(rBody.pos);
+
+        
         // currently just used to navigate scene
         manager = disp.getInputManager();
 
@@ -76,11 +80,11 @@ void main()
         {
             camera.pos(vec3(camera.pos.x, camera.pos.y - 1, camera.pos.z));
         }
-        */
         
-        fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
+        
+        //fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
 
-        fab2.transform.pos = state.pos;
+        //fab2.transform.pos = rBody.pos;
 
         fab2.renderInstance(camera);
         
