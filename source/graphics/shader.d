@@ -24,10 +24,10 @@ class Shader
         glBindAttribLocation(program, 2, "normal");
 
         glLinkProgram(program);
-        checkShaderError(program, GL_LINK_STATUS, true, "Error linking shader!");
+        checkShaderError(program, GL_LINK_STATUS, true, "Error linking shader! ");
 
         glValidateProgram(program);
-        checkShaderError(program, GL_VALIDATE_STATUS, true, "Error invalid shader!");
+        checkShaderError(program, GL_VALIDATE_STATUS, true, "Error invalid shader! ");
     
         uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform");
         uniforms[CAMERA_U] = glGetUniformLocation(program, "camera");
@@ -109,7 +109,7 @@ class Shader
         glShaderSource(shader, 1, shaderSourceStrings.ptr, shaderSourceStringsLengths.ptr);
         glCompileShader(shader);
 
-        checkShaderError(shader, GL_COMPILE_STATUS, false, "Error compiling shader!");
+        checkShaderError(shader, GL_COMPILE_STATUS, false, "Error compiling shader! ");
 
         return shader;
     }

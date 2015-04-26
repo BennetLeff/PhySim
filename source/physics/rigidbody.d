@@ -15,7 +15,7 @@ class RigidBody : State
     {
         void update(double dt)
         {
-            accel = vec3(0, -9.81 / 100, 0);
+            accel = vec3(0, 0, 0);
             
             vec3 resultantAccel = accel;
             resultantAccel += forceSum * inverseMass;
@@ -35,6 +35,8 @@ class RigidBody : State
     {
         forceSum = vec3(0.0, 0.0, 0.0);
     }
+    @property ref float mass() { return inverseMass; }
+    @property ref float mass(float m) { return inverseMass = m; }
 private:
     float inverseMass;
     vec3 forceSum;

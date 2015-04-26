@@ -17,79 +17,59 @@ void main()
 
     Camera camera = new Camera(vec3(0, 0, -10), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
-    float counter = 0.0f;
+    Mesh m = new MeshLoader().loadMesh("./res/monkey.obj");
+    Mesh m2 = new MeshLoader().loadMesh("./res/cubetextured.obj");
 
-    Mesh m = new MeshLoader().loadMesh("./res/housemodel/OBJ/FarmhouseOBJ.obj");
+    Prefab fab = new Prefab(m2, new Texture("./res/bricks.jpg"));
+    Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
 
-    Prefab fab2 = new Prefab(m, new Texture("./res/housemodel/Textures/FarmhouseTexture.jpg"));
-
+    fab.transform = new Transform();
+    fab.transform.pos(vec3(0.0, -4.0, -2.0));
+    
     fab2.transform = new Transform();
-
     fab2.transform.pos(vec3(0.0, 0.0, 20));
-
-    Input manager;
     
     double t = 0;
     double dt = 1.0 / 60.0;
 
-    //RigidBody rBody = new RigidBody(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 3.0));
+    RigidBody rBody = new RigidBody(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0));
+    RigidBody rBody2 = new RigidBody(fab.transform.pos, vec3(0.0, 0.0, 0.0));
+    RigidBodyGravity grav = new RigidBodyGravity(vec3(0.0, -0.0981, 0.0));
+
+    Collider coll = new Collider(fab.transform.pos, 2, 3, 4);
+    Collider coll2 = new Collider(fab2.transform.pos, 1, 2, 3);
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
-        //rBody.addForce(vec3(0, 0.0981, 0));
+        rBody.addForce(vec3(0, 0.09, 0));
+        grav.updateForce(&rBody, cast(float)t);
 
-        //rBody.update(t);
+        rBody.update(t);
 
         t += dt;
-
-        //writeln(rBody.pos);
-
         
-        // currently just used to navigate scene
-        manager = disp.getInputManager();
-
-        // w
-        if(manager.isKeyPressed(119))
-        {
-            camera.pos(vec3(camera.pos.x, camera.pos.y, camera.pos.z + 1));
-        }
-        // s
-        if(manager.isKeyPressed(115))
-        {
-            camera.pos(vec3(camera.pos.x, camera.pos.y, camera.pos.z - 1));
-        }
-        // a
-        if(manager.isKeyPressed(97))
-        {
-            camera.pos(vec3(camera.pos.x + 1, camera.pos.y, camera.pos.z));
-        }
-        // d
-        if(manager.isKeyPressed(100))
-        {
-            camera.pos(vec3(camera.pos.x - 1, camera.pos.y, camera.pos.z));
-        }
-        // space
-        if(manager.isKeyPressed(32))
-        {
-            camera.pos(vec3(camera.pos.x, camera.pos.y + 1, camera.pos.z));
-        }
-        // c
-        if(manager.isKeyPressed(99))
-        {
-            camera.pos(vec3(camera.pos.x, camera.pos.y - 1, camera.pos.z));
-        }
+        coll.pos = fab.transform.pos;
+        coll2.pos = fab2.transform.pos;
         
-        
-        //fab2.transform.rot(vec3(0.0, counter / 3.0, 0.0));
-
-        //fab2.transform.pos = rBody.pos;
+        fab2.transform.pos = rBody.pos;
 
         fab2.renderInstance(camera);
-        
+        fab.renderInstance(camera);
+
+        Contact con = new Contact(rBody, rBody2, 1);
+
+        if (coll.isPenetrating(coll2))
+        {
+            //writeln(coll.isPenetrating(coll2));
+            //writeln(rBody.pos);
+            //rBody.addForce(vec3(0, 1, 0));
+            con.resolve(t, rBody.pos - rBody2.pos);
+
+            writeln("called");
+        }
 
         disp.update();
-        counter += 0.05f;
     }
 }
