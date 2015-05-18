@@ -2,12 +2,13 @@ module physics.contactresolver;
 
 import core;
 import physics;
+import std.stdio;
 
 class ContactResolver
 {
     this(uint iterations)
     {
-        iterations = iterations;
+        this.iterations = iterations;
     }
 
     void setIterations(uint iterations)
@@ -33,8 +34,7 @@ class ContactResolver
                     maxIndex = i;
                 }
             }
-
-            contacts[maxIndex].resolve(dur, contactNormal);
+            contacts[0].resolve(dur, contactNormal);
             iterationsUsed++;
         }
     }

@@ -45,7 +45,10 @@ class RigidBodyGravity : ForceGenerator
     }
     override void updateForce(RigidBody* rigidBody, float dur)
     {
-        rigidBody.addForce(gravity * rigidBody.mass);
+        if (rigidBody.applyGrav)
+        {
+            rigidBody.addForce(gravity * rigidBody.mass);
+        }
     }
 private:
     vec3 gravity;

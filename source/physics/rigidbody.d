@@ -10,7 +10,10 @@ class RigidBody : State
         super(pos, vel);
         forceSum = vec3(0.0, 0.0, 0.0);
         inverseMass = 1;
+        bounce = false;
+        hasGrav = true;
     }
+
     override 
     {
         void update(double dt)
@@ -27,17 +30,39 @@ class RigidBody : State
             clearForces();
         }
     }
+
     void addForce(vec3 force)
     {
         forceSum += force;
     }
+
     void clearForces()
     {
         forceSum = vec3(0.0, 0.0, 0.0);
     }
+
+    void clearTorque()
+    {
+        // will be implemented once torque is implemented
+    }
+
+    void clearAccumulators()
+    {
+        clearForces();
+        clearTorque();
+    }
+
+    @property ref vec3 forces() { return forceSum; }
     @property ref float mass() { return inverseMass; }
     @property ref float mass(float m) { return inverseMass = m; }
+    @property ref bool canBounce() { return bounce; }
+    @property ref bool canBounce(bool b) { return bounce = b; }
+    @property ref bool applyGrav() { return hasGrav; }
+    @property ref bool applyGrav(bool g) { return hasGrav = g; }
 private:
     float inverseMass;
+    bool bounce;
+    bool hasGrav;
     vec3 forceSum;
+    quat orientation;
 }

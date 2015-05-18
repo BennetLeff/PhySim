@@ -17,17 +17,17 @@ void main()
 
     Camera camera = new Camera(vec3(0, 0, -10), WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f);
 
-    Mesh m = new MeshLoader().loadMesh("./res/monkey.obj");
+    Mesh m = new MeshLoader().loadMesh("./res/cubetextured.obj");
     Mesh m2 = new MeshLoader().loadMesh("./res/cubetextured.obj");
 
     Prefab fab = new Prefab(m2, new Texture("./res/bricks.jpg"));
     Prefab fab2 = new Prefab(m, new Texture("./res/bricks.jpg"));
 
     fab.transform = new Transform();
-    fab.transform.pos(vec3(0.0, -4.0, -2.0));
+    fab.transform.pos(vec3(0.0, -4.0, 0));
     
     fab2.transform = new Transform();
-    fab2.transform.pos(vec3(0.0, 0.0, 20));
+    fab2.transform.pos(vec3(0.0, 2.0, 0));
     
     double t = 0;
     double dt = 1.0 / 60.0;
@@ -36,14 +36,21 @@ void main()
     RigidBody rBody2 = new RigidBody(fab.transform.pos, vec3(0.0, 0.0, 0.0));
     RigidBodyGravity grav = new RigidBodyGravity(vec3(0.0, -0.0981, 0.0));
 
-    Collider coll = new Collider(fab.transform.pos, 2, 3, 4);
-    Collider coll2 = new Collider(fab2.transform.pos, 1, 2, 3);
+    BoxCollider coll = new BoxCollider(fab.transform.pos, 1, 1, 1);
+    BoxCollider coll2 = new BoxCollider(fab2.transform.pos, 1, 1, 1);
+
+    Contact con = new Contact(rBody, rBody2, 0.5);
+    ContactResolver conRes = new ContactResolver(1);
+    Contact[] conArr = [con];
+
+    Logger log = new Logger();
+
+    rBody.canBounce = true;
 
     while(!disp.isClosed())
     {
         disp.clear(0.1f, 0.2f, 0.3f, 1.0f);
 
-        rBody.addForce(vec3(0, 0.09, 0));
         grav.updateForce(&rBody, cast(float)t);
 
         rBody.update(t);
@@ -54,21 +61,16 @@ void main()
         coll2.pos = fab2.transform.pos;
         
         fab2.transform.pos = rBody.pos;
-
         fab2.renderInstance(camera);
         fab.renderInstance(camera);
 
-        Contact con = new Contact(rBody, rBody2, 1);
-
         if (coll.isPenetrating(coll2))
         {
-            //writeln(coll.isPenetrating(coll2));
-            //writeln(rBody.pos);
-            //rBody.addForce(vec3(0, 1, 0));
-            con.resolve(t, rBody.pos - rBody2.pos);
-
-            writeln("called");
+            log.log("colliding", 0);
+            conRes.resolveContacts(conArr, 1, t, rBody2.pos - rBody.pos);
         }
+        log.log(rBody.pos.toString ~ " " ~ rBody.vel.toString ~ " " ~ rBody.accel.toString, 0);
+        //log.logToCSV(t, fab2.transform.pos.y);
 
         disp.update();
     }
